@@ -7,6 +7,11 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - What did the game look like the first time you ran it?
 - List at least two concrete bugs you noticed at the start  
   (for example: "the secret number kept changing" or "the hints were backwards").
+  We found that the guessing logic was swapped and we litetally never win . 
+      1. Swapped logic 
+      2. Penalty for all guesses ( even correct ones)
+        2.1 even guesses get a +5 boost even if they're wrong 
+        2.2 odd guesses get -5 deductible always
 
 ---
 
