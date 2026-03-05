@@ -11,8 +11,9 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 🛠️ Setup
 
-1. Install dependencies: `pip install -r requirements.txt`
-2. Run the broken app: `python -m streamlit run app.py`
+1. Set up the Python virtual environment: `python -m venv .venv && source .venv/bin/activate` (Linux/Mac) or `python -m venv .venv && .venv\Scripts\activate` (Windows)
+2. Install dependencies: `pip install -r requirements.txt`
+3. Run the broken app: `python -m streamlit run app.py`
 
 ## 🕵️‍♂️ Your Mission
 
@@ -25,9 +26,9 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [x] Game purpose: a Streamlit number-guessing game where the player finds a secret number within limited attempts
+- [x] Bugs found: directions from hints were wrong, guess/secret comparison issues, logic split across files
+- [x] Fixes applied: corrected guess comparison/hints, moved core logic to `logic_utils.py`, added pytest tests
 
 ## 📸 Demo
 
