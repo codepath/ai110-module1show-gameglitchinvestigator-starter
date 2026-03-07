@@ -29,9 +29,44 @@ It wrote the code, ran away, and now the game is unplayable.
 - [ ] Detail which bugs you found.
 - [ ] Explain what fixes you applied.
 
+The game was a basic guess the number game where the user had to guess a secret number in a certain number of attempts. 
+Here are the bugs found  and their fixes.    
+    57 -  - Fix: move the status check (and st.stop()) to before the guess U
+                                                                
+      -  12. Invalid guesses consume attempts but cannot trigger game over 
+         -(app.py:88-124)                                                     
+      61 -  - st.session_state.attempts is incremented (line 89) before parse_
+         -guess is                                                            
+      62 -  called. If the guess is invalid, the attempt is used up but the ga
+         -me-over                                                             
+      63 -  check (lines 117-124) is inside the else block and never runs.    
+      64 -  - A player who submits only invalid input can exhaust all attempts
+         - and the                                                            
+      65 -  game will never transition to "lost".                             
+       3   No newline at end of file
+       4 +(none - all resolved)                                               
+
+
+
+  Bug 11 — Guess UI shown when game is already over (app.py)
+  The st.info counter, text input, and buttons all rendered before the status !=
+  "playing" check. When a player lost/won, st.stop() would fire but those UI elements
+   were already on screen — showing a stale "Attempts left: 1" counter alongside the
+  game-over message. Fix: moved the New Game button above the status check so it's
+  always accessible, then moved st.stop() before the guess UI so the input/counter
+  never render when the game is over.
+
+  Bug 12 — Invalid guesses exhaust attempts without triggering game over (app.py)
+  st.session_state.attempts += 1 ran before parse_guess, but the game-over check was
+  inside the else block (only reached for valid guesses). A player submitting garbage
+   input could burn through all attempts and the game would never transition to
+  "lost". Fix: moved the game-over check outside the else block so it runs after
+
+
 ## 📸 Demo
 
 - [ ] [Insert a screenshot of your fixed, winning game here]
+Please see the screenshot in the root directory
 
 ## 🚀 Stretch Features
 
