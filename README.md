@@ -25,7 +25,11 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
+- **Describe the game's purpose :**
+   Game's purpose is to find the secret number between two numbers. 
+   If you try to put any number and submit it, it outputs that is the 
+   secret number is lesser or greater than the number you submitted. And
+   we have limited numbers of tries to find it.
 - [ ] Detail which bugs you found.
 - [ ] Explain what fixes you applied.
 
