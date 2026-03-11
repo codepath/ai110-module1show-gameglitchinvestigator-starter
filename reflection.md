@@ -28,6 +28,30 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
 
+I used Claude on this project. 
+#### AI Suggestion that was incorrect
+I decided to mention the errors I was seeing on my end to see if Claude could identify them. I made the comment to Claude.
+
+```"I noticed in this project that the "Show hint" option is not working properly. It seems that the same message pops up after each guess."```
+
+It responded with the following. After the fix was made the same error I mentioned was still present.  
+
+![alt text](image.png)
+
+#### AI Suggestion that was incorrect
+After the suggestion given was incorrect, I changed my prompt by giving and example of the error I came across. I prompted the following
+
+```"When I guess 15 and the secret number is 91, the app is displaying the message to "Go LOWER!" when it should display to go higher."```
+
+It then gave back a correct response about where the error occured. I attempted to play again and the guessing feature seems to work now. 
+
+![alt text](image-1.png)
+
+Next, I prompted Claude to explain what the error was and received a detailed response regarding the error. 
+
+![alt text](image-2.png)
+
+
 ---
 
 ## 3. Debugging and testing your fixes
@@ -36,6 +60,18 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
 - Did AI help you design or understand any tests? How?
+
+I decided that a bug was fixed by having Claude create a test for the incorrect message being displayed and having Claude create a pytest for it. After it created the pytest, I ran the tests myself to make sure they passed. 
+
+The first time I asked Claude to create a test for our error, it created the test below. It is mentioned that the existing tests only test `outcome` string, and not the `message` being sent so a test was created to test that both the `outcome` and `message` are being returned correctly from the `check_guess` function. 
+
+![alt text](image-3.png)
+
+I tested the pytests myself and saw that they were failing. After prompting Claude to check it out, we found the following error. It turns out that check guess, returns a tuple of outcome and message. The tests were failing due to `check_guess` being assigned to one variable `result` when it needed two variables to story results.  
+
+![alt text](image-4.png)
+
+It was after this, that all tests in `logic_utils.py` passed. Both `message` and `outcome` were being asserted. 
 
 ---
 
