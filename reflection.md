@@ -63,7 +63,7 @@ Next, I prompted Claude to explain what the error was and received a detailed re
 
 I decided that a bug was fixed by having Claude create a test for the incorrect message being displayed and having Claude create a pytest for it. After it created the pytest, I ran the tests myself to make sure they passed. 
 
-The first time I asked Claude to create a test for our error, it created the test below. It is mentioned that the existing tests only test `outcome` string, and not the `message` being sent so a test was created to test that both the `outcome` and `message` are being returned correctly from the `check_guess` function. 
+The first time I asked Claude to create a test for the high/low error, it created the test below. It is mentioned that the existing tests only test `outcome` string, and not the `message` being sent so a test was created to test that both the `outcome` and `message` are being returned correctly from the `check_guess` function. 
 
 ![alt text](image-3.png)
 
@@ -72,6 +72,26 @@ I tested the pytests myself and saw that they were failing. After prompting Clau
 ![alt text](image-4.png)
 
 It was after this, that all tests in `logic_utils.py` passed. Both `message` and `outcome` were being asserted. 
+
+I also asked Claude about the error with starting a new game. I described the error as stated below
+
+``` When I click on "New Game" my previous score is kept and my secret number changes but I am not allowed to play another a game. I see a message stating "You already won. Start a new game to play again."```
+
+Claude gave the fix below but I had to step away for a bit and put my computer on sleep. 
+
+![alt text](image-5.png)
+
+When I came back, I told Claude gave me a different version of the fix. The `st.session_state.history[]` was missing. 
+
+![alt text](image-6.png)
+
+When I mentioned the difference between the two code, Claude mentioned that it missed the history reset and applied the changes. 
+
+![](image-7.png)
+
+When complete, I asked Claude to create a pytest for this bug. It created a py test that simulated a new game and tested a successful win and three other tests for losing a game, history reset, new game reset, and generating a new secret number. 
+
+![alt text](image-8.png)
 
 ---
 

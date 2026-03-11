@@ -3,6 +3,7 @@ import streamlit as st
 #FIX: refactored logic into logic_utils.py using Claude Agent mode
 from logic_utils import check_guess
 
+#FIXME: range not matching difficulty level
 def get_range_for_difficulty(difficulty: str):
     if difficulty == "Easy":
         return 1, 20
@@ -115,9 +116,13 @@ with col2:
 with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
+#FIX: Used Claude to fix the logic with creating a new game
+# Claude mentioned that status needed to be set to playing and the history needed to be reset
 if new_game:
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(1, 100)
+    st.session_state.status = "playing"
+    st.session_state.history = []
     st.success("New game started.")
     st.rerun()
 
