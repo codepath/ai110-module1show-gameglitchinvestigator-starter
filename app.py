@@ -1,19 +1,9 @@
 import random
 import streamlit as st
 #FIX: refactored logic into logic_utils.py using Claude Agent mode
-from logic_utils import check_guess
+from logic_utils import check_guess, get_range_for_difficulty
 
-#FIXME: range not matching difficulty level
-def get_range_for_difficulty(difficulty: str):
-    if difficulty == "Easy":
-        return 1, 20
-    if difficulty == "Normal":
-        return 1, 100
-    if difficulty == "Hard":
-        return 1, 50
-    return 1, 100
-
-
+#FIXME: Errors are added into the history and the number of attemps is ignored
 def parse_guess(raw: str):
     if raw is None:
         return False, None, "Enter a guess."
@@ -118,9 +108,10 @@ with col3:
 
 #FIX: Used Claude to fix the logic with creating a new game
 # Claude mentioned that status needed to be set to playing and the history needed to be reset
+# FIX: set random number to the low and high of the speicifed difficulty
 if new_game:
     st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+    st.session_state.secret = random.randint(low, high)
     st.session_state.status = "playing"
     st.session_state.history = []
     st.success("New game started.")

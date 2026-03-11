@@ -1,4 +1,26 @@
-from logic_utils import check_guess
+from logic_utils import check_guess, get_range_for_difficulty
+
+# Regression tests for the swapped difficulty range bug:
+# Normal was returning (1, 100) and Hard was returning (1, 50) — they were swapped.
+
+def test_easy_range():
+    low, high = get_range_for_difficulty("Easy")
+    assert (low, high) == (1, 20), f"Easy should be 1–20, got {low}–{high}"
+
+def test_normal_range():
+    low, high = get_range_for_difficulty("Normal")
+    assert (low, high) == (1, 50), f"Normal should be 1–50, got {low}–{high}"
+
+def test_hard_range():
+    low, high = get_range_for_difficulty("Hard")
+    assert (low, high) == (1, 100), f"Hard should be 1–100, got {low}–{high}"
+
+def test_hard_range_is_wider_than_normal():
+    # Catch the swap: Hard must have a higher ceiling than Normal
+    _, normal_high = get_range_for_difficulty("Normal")
+    _, hard_high = get_range_for_difficulty("Hard")
+    assert hard_high > normal_high, "Hard difficulty should have a wider range than Normal"
+
 
 def test_winning_guess():
     # If the secret is 50 and guess is 50, it should be a win
