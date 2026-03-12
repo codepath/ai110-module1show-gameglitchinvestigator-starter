@@ -1,4 +1,4 @@
-from logic_utils import check_guess, get_range_for_difficulty
+from logic_utils import check_guess, get_range_for_difficulty, parse_guess
 
 # Regression tests for the swapped difficulty range bug:
 # Normal was returning (1, 100) and Hard was returning (1, 50) — they were swapped.
@@ -92,3 +92,57 @@ def test_new_game_generates_new_secret():
     state = {"attempts": 3, "secret": original_secret, "status": "won", "history": []}
     results = [simulate_new_game(dict(state))["secret"] for _ in range(20)]
     assert any(s != original_secret for s in results), "New game should generate a new secret"
+
+
+# Regression tests for the invalid-input bug:
+# Submitting a non-numeric input (e.g. ".") was incrementing attempts and
+# appending the raw string to history, allowing attempts to go negative.
+# Fix: attempts and history are only updated for valid (parseable) guesses.
+
+
+def simulate_submit(session_state: dict, raw_guess: str) -> dict:
+    """Mirrors the fixed submit block in app.py."""
+    ok, guess_int, _ = parse_guess(raw_guess)
+    if ok:
+        session_state["attempts"] += 1
+        session_state["history"].append(guess_int)
+    return session_state
+
+
+def test_invalid_input_does_not_increment_attempts():
+    # Bug: submitting "." incremented attempts even though it is not a valid guess
+    state = {"attempts": 3, "history": []}
+    state = simulate_submit(state, ".")
+    assert state["attempts"] == 3, "Invalid input must not increment attempts"
+
+
+def test_invalid_input_not_added_to_history():
+    # Bug: submitting "." appended the raw string to history
+    state = {"attempts": 0, "history": []}
+    state = simulate_submit(state, ".")
+    assert state["history"] == [], "Invalid input must not be added to history"
+
+
+def test_non_numeric_string_does_not_increment_attempts():
+    state = {"attempts": 2, "history": []}
+    state = simulate_submit(state, "abc")
+    assert state["attempts"] == 2, "Non-numeric input must not increment attempts"
+
+
+def test_non_numeric_string_not_added_to_history():
+    state = {"attempts": 0, "history": []}
+    state = simulate_submit(state, "abc")
+    assert state["history"] == [], "Non-numeric input must not be added to history"
+
+
+def test_valid_input_increments_attempts():
+    # Confirm valid guesses still work correctly after the fix
+    state = {"attempts": 2, "history": []}
+    state = simulate_submit(state, "42")
+    assert state["attempts"] == 3
+
+
+def test_valid_input_added_to_history():
+    state = {"attempts": 0, "history": []}
+    state = simulate_submit(state, "42")
+    assert state["history"] == [42]
