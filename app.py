@@ -1,9 +1,5 @@
-import json
-import os
 import random
 import streamlit as st
-
-HIGHSCORE_FILE = "highscores.json"
 
 
 def get_range_for_difficulty(difficulty: str):
@@ -69,22 +65,9 @@ def heat_label(guess: int, secret: int, low: int, high: int) -> str:
     return "🧊 Cold"
 
 
-def load_highscores() -> dict:
-    if os.path.exists(HIGHSCORE_FILE):
-        with open(HIGHSCORE_FILE, "r") as f:
-            return json.load(f)
-    return {}
-
-
-def save_highscore(difficulty: str, score: int) -> bool:
-    """Save score if it beats the current best. Returns True if a new record."""
-    scores = load_highscores()
-    if score > scores.get(difficulty, 0):
-        scores[difficulty] = score
-        with open(HIGHSCORE_FILE, "w") as f:
-            json.dump(scores, f)
-        return True
-    return False
+def check_new_record(highscores: dict, difficulty: str, score: int) -> bool:
+    """Returns True if score beats the current best for difficulty."""
+    return score > highscores.get(difficulty, 0)
 
 
 # ── Page config ──────────────────────────────────────────────────────────────
@@ -119,9 +102,8 @@ st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
 st.sidebar.divider()
 st.sidebar.subheader("🏆 High Scores")
-highscores = load_highscores()
 for diff in ["Easy", "Normal", "Hard"]:
-    best = highscores.get(diff, 0)
+    best = st.session_state.highscores.get(diff, 0) if "highscores" in st.session_state else 0
     st.sidebar.caption(f"{diff}: **{best} pts**")
 
 # ── Session state ─────────────────────────────────────────────────────────────
@@ -140,6 +122,9 @@ if "status" not in st.session_state:
 
 if "history" not in st.session_state:
     st.session_state.history = []  # list of {"guess": int, "outcome": str, "heat": str}
+
+if "highscores" not in st.session_state:
+    st.session_state.highscores = {}  # {"Easy": int, "Normal": int, "Hard": int}
 
 if "last_hint" not in st.session_state:
     st.session_state.last_hint = None  # {"message": str, "outcome": str, "heat": str}
@@ -265,7 +250,9 @@ if submit:
         )
 
         if outcome == "Win":
-            is_new_record = save_highscore(difficulty, st.session_state.score)
+            is_new_record = check_new_record(st.session_state.highscores, difficulty, st.session_state.score)
+            if is_new_record:
+                st.session_state.highscores[difficulty] = st.session_state.score
             st.balloons()
             st.session_state.status = "won"
             if is_new_record:
