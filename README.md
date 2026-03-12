@@ -70,4 +70,5 @@ Number Guesser is a Streamlit-based guessing game where the player tries to gues
 
 ## 🚀 Stretch Features
 
-- [ ] [If you choose to complete Challenge 4, insert a screenshot of your Enhanced Game UI here]
+![Fetures game screenshot](extra_features.png)
+
