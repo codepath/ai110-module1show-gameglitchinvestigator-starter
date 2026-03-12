@@ -1,4 +1,4 @@
-from logic_utils import check_guess, get_range_for_difficulty, parse_guess
+from logic_utils import check_guess, get_range_for_difficulty, parse_guess, update_score
 
 # Regression tests for the swapped difficulty range bug:
 # Normal was returning (1, 100) and Hard was returning (1, 50) — they were swapped.
@@ -146,3 +146,45 @@ def test_valid_input_added_to_history():
     state = {"attempts": 0, "history": []}
     state = simulate_submit(state, "42")
     assert state["history"] == [42]
+
+
+# Regression tests for the update_score bug:
+# Win points used (attempt_number + 1) instead of attempt_number, causing
+# first-attempt wins to score 80 instead of 90.
+# "Too High" incorrectly rewarded +5 points on even attempts instead of always
+# deducting 5 like "Too Low".
+
+def test_win_first_attempt_scores_90():
+    # Bug: attempt_number + 1 made first-attempt wins score 80 instead of 90
+    score = update_score(0, "Win", 1)
+    assert score == 90, f"Win on attempt 1 should give 90 points, got {score}"
+
+def test_win_fifth_attempt_scores_50():
+    score = update_score(0, "Win", 5)
+    assert score == 50, f"Win on attempt 5 should give 50 points, got {score}"
+
+def test_win_score_floor_at_10():
+    # At attempt 10: 100 - 10*10 = 0, but minimum is 10
+    score = update_score(0, "Win", 10)
+    assert score == 10, f"Win score should not drop below 10, got {score}"
+
+def test_win_adds_to_existing_score():
+    score = update_score(50, "Win", 3)
+    assert score == 50 + 70, f"Win on attempt 3 should add 70 to existing score of 50"
+
+def test_too_high_deducts_5():
+    # Bug: "Too High" was adding 5 points on even attempts instead of always deducting
+    score = update_score(100, "Too High", 2)
+    assert score == 95, f"Too High should deduct 5 points, got {score}"
+
+def test_too_high_deducts_5_on_odd_attempt():
+    score = update_score(100, "Too High", 3)
+    assert score == 95, f"Too High should always deduct 5 points, got {score}"
+
+def test_too_low_deducts_5():
+    score = update_score(100, "Too Low", 1)
+    assert score == 95, f"Too Low should deduct 5 points, got {score}"
+
+def test_unknown_outcome_unchanged():
+    score = update_score(42, "Some Other Outcome", 1)
+    assert score == 42, "Unknown outcome should not change the score"
