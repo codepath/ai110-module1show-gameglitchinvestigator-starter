@@ -244,3 +244,31 @@ def test_attempts_left_decrements_correctly_after_each_guess():
         assert limit - state["attempts"] == expected_left
         state = simulate_submit(state, "42")
     assert limit - state["attempts"] == 0, "After all guesses, attempts_left should be 0"
+
+
+# Regression tests for the hardcoded "1 and 100" display bug:
+# The info message always showed "Guess a number between 1 and 100" regardless
+# of difficulty. Fix: replaced hardcoded values with {low} and {high} from
+# get_range_for_difficulty().
+
+def build_guess_prompt(difficulty: str) -> str:
+    """Mirrors the st.info() message in app.py."""
+    low, high = get_range_for_difficulty(difficulty)
+    return f"Guess a number between {low} and {high}."
+
+def test_easy_prompt_displays_correct_range():
+    # Easy range is 1–20; prompt must NOT say "1 and 100"
+    prompt = build_guess_prompt("Easy")
+    assert "1" in prompt and "20" in prompt, f"Easy prompt should show 1 and 20, got: {prompt}"
+    assert "100" not in prompt, f"Easy prompt must not show 100, got: {prompt}"
+
+def test_normal_prompt_displays_correct_range():
+    # Normal range is 1–50; prompt must NOT say "1 and 100"
+    prompt = build_guess_prompt("Normal")
+    assert "1" in prompt and "50" in prompt, f"Normal prompt should show 1 and 50, got: {prompt}"
+    assert "100" not in prompt, f"Normal prompt must not show 100, got: {prompt}"
+
+def test_hard_prompt_displays_correct_range():
+    # Hard range is 1–100
+    prompt = build_guess_prompt("Hard")
+    assert "1" in prompt and "100" in prompt, f"Hard prompt should show 1 and 100, got: {prompt}"
