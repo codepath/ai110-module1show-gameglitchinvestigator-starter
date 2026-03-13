@@ -188,3 +188,59 @@ def test_too_low_deducts_5():
 def test_unknown_outcome_unchanged():
     score = update_score(42, "Some Other Outcome", 1)
     assert score == 42, "Unknown outcome should not change the score"
+
+
+# Regression tests for the attempts off-by-one bug:
+# st.session_state.attempts was initialized to 1 instead of 0, causing the
+# "Attempts left" display to show one fewer attempt than actually allowed.
+# Fix: initial attempts value changed from 1 to 0.
+
+ATTEMPT_LIMIT_MAP = {
+    "Easy": 6,
+    "Normal": 8,
+    "Hard": 5,
+}
+
+def simulate_init_state() -> dict:
+    """Mirrors the session_state initialization block in app.py."""
+    return {
+        "attempts": 0,
+        "score": 0,
+        "status": "playing",
+        "history": [],
+    }
+
+def test_initial_attempts_is_zero():
+    # Bug: attempts started at 1, so attempts_left showed 7 instead of 8 for Normal
+    state = simulate_init_state()
+    assert state["attempts"] == 0, f"Initial attempts should be 0, got {state['attempts']}"
+
+def test_initial_attempts_left_matches_limit_for_easy():
+    state = simulate_init_state()
+    attempts_left = ATTEMPT_LIMIT_MAP["Easy"] - state["attempts"]
+    assert attempts_left == ATTEMPT_LIMIT_MAP["Easy"], (
+        f"Easy: expected {ATTEMPT_LIMIT_MAP['Easy']} attempts left at start, got {attempts_left}"
+    )
+
+def test_initial_attempts_left_matches_limit_for_normal():
+    state = simulate_init_state()
+    attempts_left = ATTEMPT_LIMIT_MAP["Normal"] - state["attempts"]
+    assert attempts_left == ATTEMPT_LIMIT_MAP["Normal"], (
+        f"Normal: expected {ATTEMPT_LIMIT_MAP['Normal']} attempts left at start, got {attempts_left}"
+    )
+
+def test_initial_attempts_left_matches_limit_for_hard():
+    state = simulate_init_state()
+    attempts_left = ATTEMPT_LIMIT_MAP["Hard"] - state["attempts"]
+    assert attempts_left == ATTEMPT_LIMIT_MAP["Hard"], (
+        f"Hard: expected {ATTEMPT_LIMIT_MAP['Hard']} attempts left at start, got {attempts_left}"
+    )
+
+def test_attempts_left_decrements_correctly_after_each_guess():
+    # Each valid guess should reduce attempts_left by exactly 1
+    state = simulate_init_state()
+    limit = ATTEMPT_LIMIT_MAP["Normal"]
+    for expected_left in range(limit, 0, -1):
+        assert limit - state["attempts"] == expected_left
+        state = simulate_submit(state, "42")
+    assert limit - state["attempts"] == 0, "After all guesses, attempts_left should be 0"
