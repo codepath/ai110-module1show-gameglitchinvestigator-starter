@@ -189,6 +189,22 @@ def test_unknown_outcome_unchanged():
     score = update_score(42, "Some Other Outcome", 1)
     assert score == 42, "Unknown outcome should not change the score"
 
+def test_too_high_score_cannot_go_below_zero():
+    # Bug: repeated wrong guesses could drive score negative
+    score = update_score(3, "Too High", 1)
+    assert score == 0, f"Score should floor at 0, got {score}"
+
+def test_too_low_score_cannot_go_below_zero():
+    score = update_score(3, "Too Low", 1)
+    assert score == 0, f"Score should floor at 0, got {score}"
+
+def test_score_stays_at_zero_after_multiple_wrong_guesses():
+    # Repeated wrong guesses starting from 0 must not go negative
+    score = 0
+    for _ in range(5):
+        score = update_score(score, "Too High", 1)
+    assert score == 0, f"Score should remain 0 after many wrong guesses, got {score}"
+
 
 # Regression tests for the attempts off-by-one bug:
 # st.session_state.attempts was initialized to 1 instead of 0, causing the
