@@ -1,3 +1,4 @@
+#FIX: refactored logic into logic_utils.py using Claude Agent mode
 def get_range_for_difficulty(difficulty: str):
     """Return (low, high) inclusive range for a given difficulty."""
     if difficulty == "Easy":
@@ -8,7 +9,7 @@ def get_range_for_difficulty(difficulty: str):
         return 1, 100
     return 1, 100
 
-
+#FIX: refactored logic into logic_utils.py using Claude Agent mode
 def parse_guess(raw: str):
     """
     Parse user input into an int guess.
@@ -28,7 +29,7 @@ def parse_guess(raw: str):
         return False, None, "That is not a number."
     return True, value, None
 
-
+#FIX: refactored logic into logic_utils.py using Claude Agent mode
 def check_guess(guess, secret):
     """
     Compare guess to secret and return (outcome, message).
@@ -51,7 +52,8 @@ def check_guess(guess, secret):
             return "Too High", "📉 Go LOWER!"
         return "Too Low", "📈 Go HIGHER!"
 
-
+#FIX: refactored logic into logic_utils.py using Claude Agent mode
+#FIX: Score off by 1 due to attempt_number +1; Changes made via Claude Agent
 def update_score(current_score: int, outcome: str, attempt_number: int):
     """Update score based on outcome and attempt number."""
     if outcome == "Win":
@@ -59,7 +61,7 @@ def update_score(current_score: int, outcome: str, attempt_number: int):
         if points < 10:
             points = 10
         return current_score + points
-
+    #FIX: Score cannot go below zero. Changes made via Claude agent
     if outcome == "Too High":
         return max(0, current_score - 5)
 
