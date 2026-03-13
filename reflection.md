@@ -6,7 +6,7 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 - What did the game look like the first time you ran it?
 - List at least two concrete bugs you noticed at the start  
-  (for example: "the secret number kept changing" or "the hints were backwards").
+  (for example: "the hints were backwards").
 
   When I first ran the game it looked very simple to play. Each button was detailed and the play area is clearly defined. It was great to see that the Developer Debug I played a few games and noticed the following bugs
 
