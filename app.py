@@ -1,13 +1,16 @@
 import random
 import streamlit as st
 
+# FIX: Normal and Hard difficulty ranges were swapped — Normal returned 1-100 and Hard returned 1-50.
+# I (user) noticed the difficulty settings felt off during testing; Claude identified the swapped
+# return values and corrected the order so Normal=1-50 and Hard=1-100.
 def get_range_for_difficulty(difficulty: str):
     if difficulty == "Easy":
         return 1, 20
     if difficulty == "Normal":
-        return 1, 100
-    if difficulty == "Hard":
         return 1, 50
+    if difficulty == "Hard":
+        return 1, 100
     return 1, 100
 
 
@@ -35,16 +38,16 @@ def check_guess(guess, secret):
 
     try:
         if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
+            return "Too High", "📉 Go LOWER!"
         else:
-            return "Too Low", "📉 Go LOWER!"
+            return "Too Low", "📈 Go HIGHER!"
     except TypeError:
-        g = str(guess)
+        g = int(guess)
         if g == secret:
             return "Win", "🎉 Correct!"
         if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
+            return "Too High", "📉 Go LOWER!"
+        return "Too Low", "📈 Go HIGHER!"
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
@@ -155,15 +158,15 @@ if submit:
     else:
         st.session_state.history.append(guess_int)
 
-        if st.session_state.attempts % 2 == 0:
-            secret = str(st.session_state.secret)
-        else:
-            secret = st.session_state.secret
+        # FIX: App was alternating between passing str(secret) and int(secret) to check_guess
+        # based on attempt number, intentionally triggering type mismatch bugs.
+        # I (user) spotted the inconsistent behavior mid-game; Claude traced it to this
+        # conditional and simplified it to always pass the int secret directly.
+        secret = st.session_state.secret
 
         outcome, message = check_guess(guess_int, secret)
 
-        if show_hint:
-            st.warning(message)
+        st.warning(message)
 
         st.session_state.score = update_score(
             current_score=st.session_state.score,
