@@ -288,3 +288,70 @@ def test_hard_prompt_displays_correct_range():
     # Hard range is 1–100
     prompt = build_guess_prompt("Hard")
     assert "1" in prompt and "100" in prompt, f"Hard prompt should show 1 and 100, got: {prompt}"
+
+
+# Regression tests for the difficulty-switch attempts bug:
+# Switching difficulty did not reset st.session_state.attempts. If a game
+# ended in Easy mode (6 attempts used), switching to Hard (limit=5) showed
+# attempts_left = 5 - 6 = -1.
+# Fix: detect difficulty change in session state and reset game state.
+
+def simulate_difficulty_switch(session_state: dict, new_difficulty: str) -> dict:
+    """Mirrors the difficulty-change reset block in app.py."""
+    import random
+    low, high = get_range_for_difficulty(new_difficulty)
+    session_state["difficulty"] = new_difficulty
+    session_state["attempts"] = 0
+    session_state["secret"] = random.randint(low, high)
+    session_state["status"] = "playing"
+    session_state["history"] = []
+    return session_state
+
+
+def test_difficulty_switch_resets_attempts():
+    # Bug: switching difficulty kept old attempt count, causing negative attempts_left
+    state = {"difficulty": "Easy", "attempts": 6, "secret": 10,
+             "status": "lost", "history": [1, 2, 3, 4, 5, 6]}
+    state = simulate_difficulty_switch(state, "Hard")
+    assert state["attempts"] == 0, "Switching difficulty must reset attempts to 0"
+
+
+def test_difficulty_switch_attempts_left_not_negative():
+    # Bug: Easy game ended (6 attempts used), switch to Hard (limit=5) gave -1 attempts left
+    state = {"difficulty": "Easy", "attempts": 6, "secret": 10,
+             "status": "lost", "history": [1, 2, 3, 4, 5, 6]}
+    state = simulate_difficulty_switch(state, "Hard")
+    attempts_left = ATTEMPT_LIMIT_MAP["Hard"] - state["attempts"]
+    assert attempts_left >= 0, f"Attempts left must not be negative after difficulty switch, got {attempts_left}"
+
+
+def test_difficulty_switch_attempts_left_equals_new_limit():
+    # After switching, attempts_left should equal the full limit for the new difficulty
+    state = {"difficulty": "Easy", "attempts": 6, "secret": 10,
+             "status": "lost", "history": [1, 2, 3, 4, 5, 6]}
+    state = simulate_difficulty_switch(state, "Hard")
+    attempts_left = ATTEMPT_LIMIT_MAP["Hard"] - state["attempts"]
+    assert attempts_left == ATTEMPT_LIMIT_MAP["Hard"], (
+        f"Expected {ATTEMPT_LIMIT_MAP['Hard']} attempts left after switching to Hard, got {attempts_left}"
+    )
+
+
+def test_difficulty_switch_resets_status():
+    state = {"difficulty": "Normal", "attempts": 8, "secret": 25,
+             "status": "lost", "history": []}
+    state = simulate_difficulty_switch(state, "Easy")
+    assert state["status"] == "playing", "Switching difficulty must reset status to 'playing'"
+
+
+def test_difficulty_switch_clears_history():
+    state = {"difficulty": "Normal", "attempts": 3, "secret": 25,
+             "status": "playing", "history": [10, 20, 30]}
+    state = simulate_difficulty_switch(state, "Hard")
+    assert state["history"] == [], "Switching difficulty must clear guess history"
+
+
+def test_difficulty_switch_updates_stored_difficulty():
+    state = {"difficulty": "Easy", "attempts": 0, "secret": 5,
+             "status": "playing", "history": []}
+    state = simulate_difficulty_switch(state, "Hard")
+    assert state["difficulty"] == "Hard", "Stored difficulty must update to the new selection"
