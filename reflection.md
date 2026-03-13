@@ -38,7 +38,7 @@ It responded with the following. After the fix was made the same error I mention
 
 ![alt text](image.png)
 
-#### AI Suggestion that was incorrect
+#### AI Suggestion that was correct
 After the suggestion given was incorrect, I changed my prompt by giving and example of the error I came across. I prompted the following
 
 ```"When I guess 15 and the secret number is 91, the app is displaying the message to "Go LOWER!" when it should display to go higher."```
@@ -98,14 +98,31 @@ When complete, I asked Claude to create a pytest for this bug. It created a py t
 ## 4. What did you learn about Streamlit and state?
 
 - In your own words, explain why the secret number kept changing in the original app.
+
+The secret number kept changing in the original app because the secret number not stored in session state. Since it was not stored, Streamlit reruns and a new number would appear. 
+
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
+Streamlit reruns the app based on actions, meaning it has to start the script again after a change is made. Session state makes sure values stay same when Streamlit reuns. However, if a variable is not part of session state, it will reset. 
+
+When you think of a session state, you can think of a whiteboard and a paper printing. On a whiteboard, information will stay there until it is erased as is with session state. When you print multiple pieces of paper, the paper resets its information. 
+
 - What change did you make that finally gave the game a stable secret number?
+
+The change that made a stable secret number was making the secret number a part of the session state so that it would not reset when the Streamlit rerun the program. 
 
 ---
 
 ## 5. Looking ahead: your developer habits
 
 - What is one habit or strategy from this project that you want to reuse in future labs or projects?
-  - This could be a testing habit, a prompting strategy, or a way you used Git.
+- This could be a testing habit, a prompting strategy, or a way you used Git.
+
+One habit from this project that I would like to reuse is documenting the changes that were made by the AI agent that I am using. It is not a habit I have but feel its important to communicated for transparency. 
+
+
 - What is one thing you would do differently next time you work with AI on a coding task?
+
+One thing I would do differently the next time I work with AI on a coding task is to run the application myself and note the errors I am observing. Then create a detailed prompt of what I am seeing so AI can pinpoint where I can document the needed fix. 
+
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+This project helped me be more aware of the code that AI generates. It made me more wary of what it produces and allowed me to double check the its output as well as the changes that were made via testing and manual confirmation. 

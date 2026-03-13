@@ -25,13 +25,32 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [x] Describe the game's purpose.
+
+The game's purpose was to allow the user to play a guessing game with a variety of different modes. Score is kept for each play with the option to create a new game. 
+
+- [x] Detail which bugs you found.
+
+The bugs that I found were the following: 
+
+1. The number of attempt displayed were off by 1
+2. The range to guess was hardcoded to "1 to 100"
+3. The user's score was allowed to go below 0. 
+4. The "New Game" button reset the secret number but did not allow a new game
+5. The hints for Lower/Higher were not being displayed properly 
+6. The range for each difficulty mode was not set properly.
+
+- [x] Explain what fixes you applied.
+1. The number of attempt was adjusted by 1
+2. Low and High variables were used to display the proper range for each difficulty mode.
+3. A minimum was set so that the user's score would not go below zero. 
+4. When the "New Game" button was selected, the state was set to "playing" so that the user can play another game with their previous score. 
+5. The logic was adjusted so that Lower/Higher would display properly for each guess
+6. Low and High variables were used to set the range for the secret number that was produced on a new game or a change of difficulty mode. 
 
 ## 📸 Demo
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
+- [x] https://i.imgur.com/Y5J703i.gif
 
 ## 🚀 Stretch Features
 
