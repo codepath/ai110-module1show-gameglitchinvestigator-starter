@@ -1,5 +1,6 @@
 import random
 import streamlit as st
+import time                   # if you still have the 10‑second delay
 
 def get_range_for_difficulty(difficulty: str):
     if difficulty == "Easy":
@@ -30,21 +31,33 @@ def parse_guess(raw: str):
 
 
 def check_guess(guess, secret):
-    if guess == secret:
+    # secret may be an int or a numeric string (glitch), normalise it
+    try:
+        secret_val = int(secret)
+    except (TypeError, ValueError):
+        # leave it alone if it isn’t a number
+        secret_val = secret
+
+    # direct equality check
+    if guess == secret_val:
         return "Win", "🎉 Correct!"
 
     try:
-        if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
+        # numeric comparison
+        if guess > secret_val:
+            # guess is too high, tell the player to go lower
+            return "Too High", "📉 Go LOWER!"
         else:
-            return "Too Low", "📉 Go LOWER!"
+            # guess is too low, tell them to go higher
+            return "Too Low", "📈 Go HIGHER!"
     except TypeError:
+        # fall back to string comparison if types still mismatch
         g = str(guess)
         if g == secret:
             return "Win", "🎉 Correct!"
         if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
+            return "Too High", "📉 Go LOWER!"
+        return "Too Low", "📈 Go HIGHER!"
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
@@ -78,7 +91,7 @@ difficulty = st.sidebar.selectbox(
 )
 
 attempt_limit_map = {
-    "Easy": 6,
+    "Easy": 11,
     "Normal": 8,
     "Hard": 5,
 }
@@ -111,30 +124,30 @@ st.info(
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
 
-with st.expander("Developer Debug Info"):
-    st.write("Secret:", st.session_state.secret)
-    st.write("Attempts:", st.session_state.attempts)
-    st.write("Score:", st.session_state.score)
-    st.write("Difficulty:", difficulty)
-    st.write("History:", st.session_state.history)
+# placeholder for the hint message; re‑using this will “refresh” it
+hint_slot = st.empty()
 
-raw_guess = st.text_input(
-    "Enter your guess:",
-    key=f"guess_input_{difficulty}"
-)
-
-col1, col2, col3 = st.columns(3)
-with col1:
-    submit = st.button("Submit Guess 🚀")
-with col2:
-    new_game = st.button("New Game 🔁")
-with col3:
+# build a little form so that Enter will submit the guess
+with st.form("guess_form"):
+    raw_guess = st.text_input(
+        "Enter your guess:",
+        key=f"guess_input_{difficulty}"
+    )
     show_hint = st.checkbox("Show hint", value=True)
+    submit = st.form_submit_button("Submit Guess 🚀")
+
+# “new game” stays outside the form
+new_game = st.button("New Game 🔁")
 
 if new_game:
-    st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+    # re‑initialise everything the way it was at startup
+    st.session_state.attempts = 1             # first attempt
+    st.session_state.secret = random.randint(low, high)
+    st.session_state.score = 0
+    st.session_state.status = "playing"
+    st.session_state.history = []
     st.success("New game started.")
+    hint_slot.empty()            # clear any leftover hint
     st.rerun()
 
 if st.session_state.status != "playing":
@@ -147,8 +160,10 @@ if st.session_state.status != "playing":
 if submit:
     st.session_state.attempts += 1
 
-    ok, guess_int, err = parse_guess(raw_guess)
+    # clear whatever was there previously
+    hint_slot.empty()
 
+    ok, guess_int, err = parse_guess(raw_guess)
     if not ok:
         st.session_state.history.append(raw_guess)
         st.error(err)
@@ -163,7 +178,21 @@ if submit:
         outcome, message = check_guess(guess_int, secret)
 
         if show_hint:
-            st.warning(message)
+            # cycle through several “colours” based on attempt count
+            hint_funcs = [
+                hint_slot.warning,  # yellow
+                hint_slot.info,     # blue
+                hint_slot.success,  # green
+                hint_slot.error,    # red
+            ]
+            func = hint_funcs[(st.session_state.attempts - 1) % len(hint_funcs)]
+            func(message)
+
+            # optional: make the hint disappear after ten seconds
+            time.sleep(10)
+            hint_slot.empty()
+        else:
+            hint_slot.empty()
 
         st.session_state.score = update_score(
             current_score=st.session_state.score,
