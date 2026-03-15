@@ -20,6 +20,7 @@ pip-wheel-metadata/
 
 # Streamlit
 .streamlit/secrets.toml
+high_score.json
 
 # Test and coverage artifacts
 .pytest_cache/

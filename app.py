@@ -1,127 +1,125 @@
+from __future__ import annotations
+
+import json
 import random
+from pathlib import Path
+from typing import Any
+
+import altair as alt
+import pandas as pd
 import streamlit as st
 
-def get_range_for_difficulty(difficulty: str):
-    if difficulty == "Easy":
-        return 1, 20
-    if difficulty == "Normal":
-        return 1, 100
-    if difficulty == "Hard":
-        return 1, 50
-    return 1, 100
+from logic_utils import check_guess, get_range_for_difficulty, parse_guess, update_score
+
+HIGH_SCORE_PATH = Path(__file__).with_name("high_score.json")
 
 
-def parse_guess(raw: str):
-    if raw is None:
-        return False, None, "Enter a guess."
-
-    if raw == "":
-        return False, None, "Enter a guess."
-
+def load_high_score() -> dict[str, Any]:
+    if not HIGH_SCORE_PATH.exists():
+        return {"score": 0, "difficulty": None, "attempts": None, "updated_at": None}
     try:
-        if "." in raw:
-            value = int(float(raw))
-        else:
-            value = int(raw)
+        data = json.loads(HIGH_SCORE_PATH.read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            raise ValueError("high_score.json is not a dict")
+        return {
+            "score": int(data.get("score", 0)),
+            "difficulty": data.get("difficulty"),
+            "attempts": data.get("attempts"),
+            "updated_at": data.get("updated_at"),
+        }
     except Exception:
-        return False, None, "That is not a number."
-
-    return True, value, None
+        return {"score": 0, "difficulty": None, "attempts": None, "updated_at": None}
 
 
-def check_guess(guess, secret):
-    if guess == secret:
-        return "Win", "🎉 Correct!"
-
+def save_high_score(record: dict[str, Any]) -> None:
     try:
-        if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
-        else:
-            return "Too Low", "📉 Go LOWER!"
-    except TypeError:
-        g = str(guess)
-        if g == secret:
-            return "Win", "🎉 Correct!"
-        if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
+        HIGH_SCORE_PATH.write_text(json.dumps(record, indent=2), encoding="utf-8")
+    except Exception:
+        pass
 
 
-def update_score(current_score: int, outcome: str, attempt_number: int):
+def get_hint_message(outcome: str) -> str:
     if outcome == "Win":
-        points = 100 - 10 * (attempt_number + 1)
-        if points < 10:
-            points = 10
-        return current_score + points
-
+        return "🎉 Correct!"
     if outcome == "Too High":
-        if attempt_number % 2 == 0:
-            return current_score + 5
-        return current_score - 5
-
+        return "📉 Too high — go LOWER!"
     if outcome == "Too Low":
-        return current_score - 5
+        return "📈 Too low — go HIGHER!"
+    return "Try again."
 
-    return current_score
 
-st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
+def hot_cold_label(distance: int) -> str:
+    if distance == 0:
+        return "Perfect ✅"
+    if distance <= 5:
+        return "Hot 🔥"
+    if distance <= 12:
+        return "Warm 🙂"
+    return "Cold 🧊"
+
+
+def reset_game(low: int, high: int) -> None:
+    st.session_state.secret = random.randint(low, high)
+    st.session_state.attempts = 0
+    st.session_state.score = 0
+    st.session_state.status = "playing"
+    st.session_state.guesses = []
+
+
+st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮", layout="centered")
 
 st.title("🎮 Game Glitch Investigator")
-st.caption("An AI-generated guessing game. Something is off.")
+st.caption("A guessing game that started out glitchy — your job is to fix it responsibly.")
 
 st.sidebar.header("Settings")
 
-difficulty = st.sidebar.selectbox(
-    "Difficulty",
-    ["Easy", "Normal", "Hard"],
-    index=1,
-)
-
-attempt_limit_map = {
-    "Easy": 6,
-    "Normal": 8,
-    "Hard": 5,
-}
+difficulty = st.sidebar.selectbox("Difficulty", ["Easy", "Normal", "Hard"], index=1)
+attempt_limit_map = {"Easy": 6, "Normal": 8, "Hard": 5}
 attempt_limit = attempt_limit_map[difficulty]
 
 low, high = get_range_for_difficulty(difficulty)
-
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
+if "high_score" not in st.session_state:
+    st.session_state.high_score = load_high_score()
+
+high_score = st.session_state.high_score
+st.sidebar.subheader("High Score")
+st.sidebar.metric("Best score", int(high_score.get("score", 0)))
+if high_score.get("updated_at"):
+    st.sidebar.caption(f"Last updated: {high_score['updated_at']}")
+
+if "difficulty" not in st.session_state:
+    st.session_state.difficulty = difficulty
+
+if st.session_state.difficulty != difficulty:
+    # FIXME: Streamlit reruns on every interaction; difficulty changes should reset game state.
+    st.session_state.difficulty = difficulty
+    reset_game(low, high)
+
 if "secret" not in st.session_state:
-    st.session_state.secret = random.randint(low, high)
-
-if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
-
-if "score" not in st.session_state:
-    st.session_state.score = 0
-
-if "status" not in st.session_state:
-    st.session_state.status = "playing"
-
-if "history" not in st.session_state:
-    st.session_state.history = []
+    reset_game(low, high)
 
 st.subheader("Make a guess")
 
-st.info(
-    f"Guess a number between 1 and 100. "
-    f"Attempts left: {attempt_limit - st.session_state.attempts}"
-)
+attempts_left = max(attempt_limit - int(st.session_state.attempts), 0)
+col_a, col_b = st.columns(2)
+with col_a:
+    st.metric("Score", int(st.session_state.score))
+with col_b:
+    st.metric("Attempts left", attempts_left)
+
+st.info(f"Guess a number between {low} and {high}.")
 
 with st.expander("Developer Debug Info"):
     st.write("Secret:", st.session_state.secret)
     st.write("Attempts:", st.session_state.attempts)
     st.write("Score:", st.session_state.score)
     st.write("Difficulty:", difficulty)
-    st.write("History:", st.session_state.history)
+    st.write("Guesses:", st.session_state.guesses)
 
-raw_guess = st.text_input(
-    "Enter your guess:",
-    key=f"guess_input_{difficulty}"
-)
+raw_guess = st.text_input("Enter your guess:", key=f"guess_input_{difficulty}")
 
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -132,8 +130,8 @@ with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
 if new_game:
-    st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+    # FIX: Reset state cleanly and keep difficulty/range consistent (done with AI help, then verified in app).
+    reset_game(low, high)
     st.success("New game started.")
     st.rerun()
 
@@ -145,47 +143,96 @@ if st.session_state.status != "playing":
     st.stop()
 
 if submit:
-    st.session_state.attempts += 1
-
     ok, guess_int, err = parse_guess(raw_guess)
-
     if not ok:
-        st.session_state.history.append(raw_guess)
         st.error(err)
+    elif guess_int is None:
+        st.error("Enter a guess.")
+    elif guess_int < low or guess_int > high:
+        st.error(f"Out of range. Enter a number from {low} to {high}.")
     else:
-        st.session_state.history.append(guess_int)
+        st.session_state.attempts += 1
+        st.session_state.guesses.append(int(guess_int))
 
-        if st.session_state.attempts % 2 == 0:
-            secret = str(st.session_state.secret)
-        else:
-            secret = st.session_state.secret
+        # FIX: Stable comparison logic in `logic_utils.check_guess` (no type-flipping secret).
+        outcome = check_guess(int(guess_int), int(st.session_state.secret))
+        hint = get_hint_message(outcome)
 
-        outcome, message = check_guess(guess_int, secret)
+        distance = abs(int(guess_int) - int(st.session_state.secret))
+        temp = hot_cold_label(distance)
 
         if show_hint:
-            st.warning(message)
+            if outcome == "Win":
+                st.success(f"{hint} ({temp})")
+            else:
+                st.warning(f"{hint} ({temp})")
 
         st.session_state.score = update_score(
-            current_score=st.session_state.score,
+            current_score=int(st.session_state.score),
             outcome=outcome,
-            attempt_number=st.session_state.attempts,
+            attempt_number=int(st.session_state.attempts),
         )
 
         if outcome == "Win":
             st.balloons()
             st.session_state.status = "won"
+
             st.success(
                 f"You won! The secret was {st.session_state.secret}. "
                 f"Final score: {st.session_state.score}"
             )
-        else:
-            if st.session_state.attempts >= attempt_limit:
-                st.session_state.status = "lost"
-                st.error(
-                    f"Out of attempts! "
-                    f"The secret was {st.session_state.secret}. "
-                    f"Score: {st.session_state.score}"
+
+            # FIX: Feature expansion — persistent high score saved to disk.
+            if int(st.session_state.score) > int(high_score.get("score", 0)):
+                high_score.update(
+                    {
+                        "score": int(st.session_state.score),
+                        "difficulty": difficulty,
+                        "attempts": int(st.session_state.attempts),
+                        "updated_at": pd.Timestamp.utcnow().isoformat(timespec="seconds")
+                        + "Z",
+                    }
                 )
+                save_high_score(high_score)
+                st.sidebar.success("New high score saved!")
+
+        elif st.session_state.attempts >= attempt_limit:
+            st.session_state.status = "lost"
+            st.error(
+                f"Out of attempts! The secret was {st.session_state.secret}. "
+                f"Score: {st.session_state.score}"
+            )
 
 st.divider()
-st.caption("Built by an AI that claims this code is production-ready.")
+
+# Challenge 4: Enhanced UI — show a clean session summary
+st.subheader("Session Summary")
+
+if st.session_state.guesses:
+    df = pd.DataFrame(
+        {
+            "Attempt": list(range(1, len(st.session_state.guesses) + 1)),
+            "Guess": st.session_state.guesses,
+        }
+    )
+    df["Distance"] = (df["Guess"] - int(st.session_state.secret)).abs()
+    df["Hot/Cold"] = df["Distance"].apply(lambda d: hot_cold_label(int(d)))
+    df["Result"] = df["Guess"].apply(lambda g: check_guess(int(g), int(st.session_state.secret)))
+    st.dataframe(df, hide_index=True, use_container_width=True)
+
+    st.sidebar.subheader("Guess History")
+    chart = (
+        alt.Chart(df)
+        .mark_line(point=True)
+        .encode(
+            x=alt.X("Attempt:Q", title="Attempt"),
+            y=alt.Y("Guess:Q", title="Guess"),
+            tooltip=["Attempt", "Guess", "Distance", "Hot/Cold", "Result"],
+        )
+        .properties(height=180)
+    )
+    st.sidebar.altair_chart(chart, use_container_width=True)
+else:
+    st.caption("No guesses yet. Submit a guess to see your session summary.")
+
+st.caption("Built by an AI… and then debugged by a human.")

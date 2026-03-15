@@ -2,37 +2,45 @@
 
 ## 🚨 The Situation
 
-You asked an AI to build a simple "Number Guessing Game" using Streamlit.
-It wrote the code, ran away, and now the game is unplayable. 
-
-- You can't win.
-- The hints lie to you.
-- The secret number seems to have commitment issues.
+This repo is a Streamlit number guessing game that started out *very* buggy (wrong hints, weird state resets, confusing UI).
 
 ## 🛠️ Setup
 
 1. Install dependencies: `pip install -r requirements.txt`
-2. Run the broken app: `python -m streamlit run app.py`
-
-## 🕵️‍♂️ Your Mission
-
-1. **Play the game.** Open the "Developer Debug Info" tab in the app to see the secret number. Try to win.
-2. **Find the State Bug.** Why does the secret number change every time you click "Submit"? Ask ChatGPT: *"How do I keep a variable from resetting in Streamlit when I click a button?"*
-3. **Fix the Logic.** The hints ("Higher/Lower") are wrong. Fix them.
-4. **Refactor & Test.** - Move the logic into `logic_utils.py`.
-   - Run `pytest` in your terminal.
-   - Keep fixing until all tests pass!
+2. Run the app: `python -m streamlit run app.py`
+3. Run tests: `python -m pytest`
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [x] **Purpose:** A number guessing game where you try to find the secret number in a limited number of attempts.
+- [x] **Bugs found:** Backwards hints, “New Game” ignoring difficulty range, confusing state/attempt behavior.
+- [x] **Fixes applied:** Moved logic into `logic_utils.py`, fixed hint logic + state resets, added tests, and improved the UI/summary output.
 
 ## 📸 Demo
+- ![alt text](image.png)
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
+## ✅ Optional Extensions Completed
 
-## 🚀 Stretch Features
+### Challenge 1: Advanced Edge-Case Testing
 
-- [ ] [If you choose to complete Challenge 4, insert a screenshot of your Enhanced Game UI here]
+- Added extra pytest coverage for edge inputs (whitespace, decimals, negatives, huge values).
+- ![alt text](image-1.png)
+### Challenge 2: Feature Expansion
+
+- Added a **persistent High Score** that saves to `high_score.json`.
+- Added a **Guess History** view (sidebar chart + session summary table).
+
+### Challenge 3: Documentation / PEP 8
+
+- Added professional docstrings and type hints in `logic_utils.py`.
+- Cleaned up code style and naming.
+
+### Challenge 4: Enhanced Game UI
+
+- Added “Hot/Warm/Cold” feedback based on distance from the secret.
+- Added a session summary table.
+- ![alt text](image-2.png)
+
+### Challenge 5: AI Model Comparison
+
+- Added a short comparison section in `reflection.md`.
