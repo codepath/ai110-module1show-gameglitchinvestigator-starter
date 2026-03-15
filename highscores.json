@@ -1,0 +1,32 @@
+[
+  {
+    "score": 100,
+    "difficulty": "Normal",
+    "attempts": 1,
+    "date": "2026-03-15"
+  },
+  {
+    "score": 100,
+    "difficulty": "Normal",
+    "attempts": 1,
+    "date": "2026-03-15"
+  },
+  {
+    "score": 100,
+    "difficulty": "Hard",
+    "attempts": 1,
+    "date": "2026-03-15"
+  },
+  {
+    "score": 90,
+    "difficulty": "Normal",
+    "attempts": 2,
+    "date": "2026-03-15"
+  },
+  {
+    "score": 90,
+    "difficulty": "Normal",
+    "attempts": 2,
+    "date": "2026-03-15"
+  }
+]
