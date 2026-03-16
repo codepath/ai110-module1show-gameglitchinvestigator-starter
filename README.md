@@ -26,13 +26,19 @@ It wrote the code, ran away, and now the game is unplayable.
 ## 📝 Document Your Experience
 
 - [ ] Describe the game's purpose.
+	To guess the secret number
 - [ ] Detail which bugs you found.
+	Scores were wrong
+	New Game didn't reset the game
+	Hints were opposite
 - [ ] Explain what fixes you applied.
+	Scores begin at 100 and deduct correctly for incorrect guesses
+	New Game resets the game
+	Hints print correctly
 
 ## 📸 Demo
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
-
+- [ ] 
 ## 🚀 Stretch Features
 
 - [ ] [If you choose to complete Challenge 4, insert a screenshot of your Enhanced Game UI here]
