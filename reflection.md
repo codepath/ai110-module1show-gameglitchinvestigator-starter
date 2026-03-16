@@ -8,6 +8,7 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - List at least two concrete bugs you noticed at the start  
   (for example: "the secret number kept changing" or "the hints were backwards").
 
+There is a sidebar with an option to change the difficulty of the game. The biggest section of the site contains the layout of the game, with a text box to enter a guess, a submit button, and a new game button. When you enter a guess, a hint appears telling you to go higher or lower. The first bug I noticed was that the hints are often wrong. When the secret number was 11 and I guessed 20, the hints prompted me to go higher. The second bug I noticed was that the "New Game" button doesn't work completely. After I lost a game and tried to restart, the history list would not clear, so the game kept telling me to start a new game. The next bug I discovered was that the game did not enforce the difficulty restraints all the time. When I set the difficult to easy, the secret number was 77.
 ---
 
 ## 2. How did you use AI as a teammate?
