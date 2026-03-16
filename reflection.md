@@ -6,7 +6,7 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 - What did the game look like the first time you ran it?
 - List at least two concrete bugs you noticed at the start  
-  (for example: "the secret number kept changing" or "the hints were backwards").
+  (for example: "the hints were backwards").
 
 There is a sidebar with an option to change the difficulty of the game. The biggest section of the site contains the layout of the game, with a text box to enter a guess, a submit button, and a new game button. When you enter a guess, a hint appears telling you to go higher or lower. The first bug I noticed was that the hints are often wrong. When the secret number was 11 and I guessed 20, the hints prompted me to go higher. The second bug I noticed was that the "New Game" button doesn't work completely. After I lost a game and tried to restart, the history list would not clear, so the game kept telling me to start a new game. The next bug I discovered was that the game did not enforce the difficulty restraints all the time. When I set the difficult to easy, the secret number was 77. Lastly, the normal range is higher than the hard range. 
 ---
@@ -31,7 +31,6 @@ I decided a bug was really fixed by running tests. One test I ran was rerunning 
 
 ## 4. What did you learn about Streamlit and state?
 
-- In your own words, explain why the secret number kept changing in the original app.
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 - What change did you make that finally gave the game a stable secret number?
 It kept changing becuase it kept being regenerated whenever the script ran without being stored. To fix this, the code was updated to store it once per game until it is reset via the New Game button. "Reruns" are akin to refreshing the code. Evertime the user interacted with the code in any way, the whole script would run from the start again. Session state is the built in memory system. It saves data across reruns. 
