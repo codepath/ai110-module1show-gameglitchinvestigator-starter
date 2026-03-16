@@ -25,14 +25,13 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- Describe the game's purpose.
+[ This is a guessing game. Given 3 difficulties, you are prompted to guess a number within the given range. While you are putting your guesses, you can choose to get hints on going higher or lower to get close to the secret number. ] 
+- Detail which bugs you found.
+[ The secret number kept changing every 2 attempts, the game did not reset after win/lose condition, normal difficulty was easier than easy difficulty. ] 
+- Explain what fixes you applied.
+[ Made the secret number stay the same throughout the guessing round, made the reset button start a new game, gave the easy settings more attempts than normal, fixed scoring to only deduct with more guesses. ] 
 
 ## 📸 Demo
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
-
-## 🚀 Stretch Features
-
-- [ ] [If you choose to complete Challenge 4, insert a screenshot of your Enhanced Game UI here]
+- [![alt text](image.png)] 
