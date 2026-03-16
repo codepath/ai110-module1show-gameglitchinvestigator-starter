@@ -16,6 +16,7 @@ There is a sidebar with an option to change the difficulty of the game. The bigg
 - Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
+I used the Copilot chat in VSCode. An AI suggestion that was correct was the hint fix. The AI suggested converting to ints before comparing and writing the correct messages for when the number didn't match the goal. I verified this through tests in test_game_logic and running the site again to play through the game.
 
 ---
 
@@ -25,7 +26,7 @@ There is a sidebar with an option to change the difficulty of the game. The bigg
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
 - Did AI help you design or understand any tests? How?
-
+I decided a bug was really fixed by running tests. One test I ran was rerunning the game itself so I could play through it. I did multiple playthroughs of the game to make sure the hint bug was really fixed. AI helped me write a pytest testing the hint bug. 
 ---
 
 ## 4. What did you learn about Streamlit and state?
@@ -33,7 +34,7 @@ There is a sidebar with an option to change the difficulty of the game. The bigg
 - In your own words, explain why the secret number kept changing in the original app.
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 - What change did you make that finally gave the game a stable secret number?
-
+It kept changing becuase it kept being regenerated whenever the script ran without being stored. To fix this, the code was updated to store it once per game until it is reset via the New Game button. "Reruns" are akin to refreshing the code. Evertime the user interacted with the code in any way, the whole script would run from the start again. Session state is the built in memory system. It saves data across reruns. 
 ---
 
 ## 5. Looking ahead: your developer habits
@@ -42,3 +43,4 @@ There is a sidebar with an option to change the difficulty of the game. The bigg
   - This could be a testing habit, a prompting strategy, or a way you used Git.
 - What is one thing you would do differently next time you work with AI on a coding task?
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+One habit I would take away from this project is generating pytests when you fix bugs. One thing I would do differently is asking the AI for more explanations whenever it proposes a change in the code. This project has allowed me to realize how helpful and detail oriented AI can be when coding. 

@@ -1,14 +1,15 @@
+#FIX: Refactored logic into logic_utils.py using Copilot Agent mode
 def get_range_for_difficulty(difficulty: str):
     """Return (low, high) inclusive range for a given difficulty."""
     if difficulty == "Easy":
         return 1, 20
     if difficulty == "Normal":
-        return 1, 100
-    if difficulty == "Hard":
         return 1, 50
+    if difficulty == "Hard":
+        return 1, 100
     return 1, 100
 
-
+#FIX: Refactored logic into logic_utils.py using Copilot Agent mode
 def parse_guess(raw: str):
     """
     Parse user input into an int guess.
@@ -31,7 +32,9 @@ def parse_guess(raw: str):
 
     return True, value, None
 
-
+#FIX: Refactored logic into logic_utils.py using Copilot Agent mode
+#FIX: Added int() conversion to both guess and secret to fix the bug where string secrets were not being compared correctly
+#FIX: Corrected the logic to ensure that the function returns the correct outcome and message based on the comparison of guess and secret
 def check_guess(guess, secret):
     """
     Compare guess to secret and return (outcome, message).
@@ -47,7 +50,7 @@ def check_guess(guess, secret):
     else:
         return "Too Low", "📈 Go HIGHER!"
 
-
+#FIX: Refactored logic into logic_utils.py using Copilot Agent mode
 def update_score(current_score: int, outcome: str, attempt_number: int):
     """Update score based on outcome and attempt number."""
     if outcome == "Win":
