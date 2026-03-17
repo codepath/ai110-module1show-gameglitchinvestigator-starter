@@ -25,13 +25,33 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [✔️] Describe the game's purpose.
+- [✔️] Detail which bugs you found.
+- [✔️] Explain what fixes you applied.
 
 ## 📸 Demo
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
+- [✔️] Generates appropriate hint if guess is higher than secret:
+
+  <img width="500" src="https://github.com/user-attachments/assets/2c1bb83f-2ba6-449d-bf02-df13df230d7e" />
+
+- [✔️] Generates appropriate hint if guess is lower than secret:
+
+  <img width="500" src="https://github.com/user-attachments/assets/245198f8-7d02-49e1-be6b-458ca062e9da" />
+
+- [✔️] Difficulty level range from left sidebar and center message match:
+
+  <img width="400" src="https://github.com/user-attachments/assets/ed9abf67-56db-45e7-b3e3-f7a077543bb0" />
+  <img width="400" src="https://github.com/user-attachments/assets/3e0d766c-cb83-4560-b176-c20f97538d0f" />
+  <img width="400" src="https://github.com/user-attachments/assets/8584ff7f-6bba-471a-94ab-b0354f7a4bc7" />
+
+- [✔️] Documents the first guess input and the following ones as well:
+
+    <img width="500" src="https://github.com/user-attachments/assets/20a9bed0-e138-4467-b47f-1c66e16427d8" />
+
+
+
+      
 
 ## 🚀 Stretch Features
 
