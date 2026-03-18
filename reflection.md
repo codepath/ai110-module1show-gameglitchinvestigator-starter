@@ -8,7 +8,17 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - List at least two concrete bugs you noticed at the start  
   (for example: "the hints were backwards").
 
----
+--- 
+Well first off when I first ran it like just visually looking at it it looks as it will be able to run but I'm going to figure it out soon enough. 
+1. I expected the hints for examples to be accurate however they are misleading. For example, I type in a number that's lower than the target number it gives the hint of going lower and vice versa. 
+2. I expected that when i hit the enter key it woukld submit my guess however only the button's functionality works.
+3. The difficulty setting does The attempts allowed for different difficulties are not what they are supposed to be they are one less.
+
+I expected when clicking new game for the attempts and history to be cleared however they were not.
+
+I expected the range of numbers to correspond to difficulty however it seems they were all in that 1-100 range.
+
+I expected to be given the amount of attempts on the difficulty level however I was not
 
 ## 2. How did you use AI as a teammate?
 

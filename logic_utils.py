@@ -11,7 +11,6 @@ def parse_guess(raw: str):
     """
     raise NotImplementedError("Refactor this function from app.py into logic_utils.py")
 
-
 def check_guess(guess, secret):
     """
     Compare guess to secret and return (outcome, message).
@@ -19,7 +18,6 @@ def check_guess(guess, secret):
     outcome examples: "Win", "Too High", "Too Low"
     """
     raise NotImplementedError("Refactor this function from app.py into logic_utils.py")
-
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
     """Update score based on outcome and attempt number."""
