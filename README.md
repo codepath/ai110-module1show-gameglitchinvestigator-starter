@@ -25,13 +25,33 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [x] **Describe the game's purpose.**
+  This is a number-guessing game built with Streamlit. The player picks a difficulty (Easy / Normal / Hard), which sets the secret number range and the attempt limit. Each round the player guesses a number; the game replies with "Too High", "Too Low", or "Correct!" and adjusts the score accordingly. The goal is to guess the secret number within the allowed attempts.
+
+- [x] **Detail which bugs you found.**
+  - **Bug 1 & 2 — New Game button broken after win or loss:** After winning or losing, clicking "New Game" appeared to do nothing. The game immediately showed the end-of-game message again and stopped.
+  - **Bug 3 — No feedback when hint is hidden:** When the player unchecked "Show hint" and submitted a guess, nothing appeared on screen — no confirmation, no attempt count, no indication the guess was even registered.
+
+- [x] **Explain what fixes you applied.**
+  - **Bug 1 & 2:** The New Game handler was only resetting `attempts` and `secret` but never resetting `st.session_state.status` (which stayed `"won"` or `"lost"`). On the next rerun, the status check at the top of the page fired `st.stop()` immediately. Fix: also reset `status = "playing"`, `score = 0`, and `history = []` in the New Game handler.
+  - **Bug 3:** Added an `else` branch to the hint display block. When `show_hint` is `False`, a neutral `st.info()` message now confirms the guess was submitted and shows the current attempt count.
+  - **Refactor:** Moved all four game-logic functions (`get_range_for_difficulty`, `parse_guess`, `check_guess`, `update_score`) from `app.py` into `logic_utils.py` and imported them back. `app.py` now stays focused on UI; all testable logic lives in `logic_utils.py`.
 
 ## 📸 Demo
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
+- [x] Winning the game (correct guess):
+
+![Correct guess](images/correct.png)
+
+- [x] New Game button working after win/loss:
+
+![New game reset](images/new_game.png)
+
+- [x] Notification shown when hint is hidden:
+
+![Notification without hint](images/notification_without_hint.png)
+
+
 
 ## 🚀 Stretch Features
 
