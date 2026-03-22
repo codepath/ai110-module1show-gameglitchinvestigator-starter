@@ -4,17 +4,12 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 ## 1. What was broken when you started?
 
-- What did the game look like the first time you ran it?
-- List at least two concrete bugs you noticed at the start  
-  (for example: "the secret number kept changing" or "the hints were backwards").
-
+ The game looked fine, and there was no error when I ran the game initially. After testing the program, I found out that the level logic is broken. For example for level "easy" the program should only suggest numbers between 1 - 20, "Normal" 1 -50 and "Hard" 1 -100. The second bug I noticed was with the feedback logic where The secret is larger than the guess and the feedback should be to go higher, but it says go lower or vice versa. The third bug is with scoring system. 
 ---
 
 ## 2. How did you use AI as a teammate?
 
-- Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-- Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
-- Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
+Copilot: I wanted to fix the feed back message "GO Higher" or "GO LOWER". And AI was suggesting that if guess > secret I should tell the player to "GO Higher" which is worng it should be "GO LOWER". So, I fixed to say the other way around. 
 
 ---
 
@@ -24,7 +19,7 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
 - Did AI help you design or understand any tests? How?
-
+Yes, I asked the AI to write some test cases for the features updated. for each part of the program, and I checked the result they returned. I also played the game and tested each feature input, output.
 ---
 
 ## 4. What did you learn about Streamlit and state?
