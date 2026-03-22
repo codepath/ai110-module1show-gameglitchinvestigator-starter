@@ -25,13 +25,21 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- This game is a number guessing game where players try to guess a secret number within a limited number of attempts, with 3 level. 
+- Bugs found:
+   - State bug — The secret number regenerated on every button click because it wasn't stored in st.session_state.
+   - Inverted hints — The "Go Higher/Lower" hints were backwards (guess > secret said "Go Higher" instead of "Go Lower").
+   - Difficulty range bug — Easy/Normal/Hard were mapped to the wrong number ranges.
+   - core logic bug — The scoring system didn't correctly reward wins or penalize wrong guesses.
+   - Status reset bug — After winning, starting a new game didn't reset status back to "playing", so the win message persisted.
+
+- Fixes applied: All five bugs are fixed in the current app.py and logic_utils.py.
+
+## Tests
+![alt text](image-1.png)
 
 ## 📸 Demo
-
-- [ ] [Insert a screenshot of your fixed, winning game here]
+![alt text](image.png)
 
 ## 🚀 Stretch Features
 

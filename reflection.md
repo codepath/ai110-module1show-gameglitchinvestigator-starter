@@ -15,10 +15,6 @@ Copilot: I wanted to fix the feed back message "GO Higher" or "GO LOWER". And AI
 
 ## 3. Debugging and testing your fixes
 
-- How did you decide whether a bug was really fixed?
-- Describe at least one test you ran (manual or using pytest)  
-  and what it showed you about your code.
-- Did AI help you design or understand any tests? How?
 Yes, I asked the AI to write some test cases for the features updated. for each part of the program, and I checked the result they returned. I also played the game and tested each feature input, output.
 ---
 
