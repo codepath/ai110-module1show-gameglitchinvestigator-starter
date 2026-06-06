@@ -32,23 +32,15 @@ low, high = get_range_for_difficulty(difficulty)
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
-if "secret" not in st.session_state:
+# FIX: AI Agent added difficulty state management and consolidated state initialization
+if "difficulty" not in st.session_state or st.session_state.difficulty != difficulty:
+    st.session_state.difficulty = difficulty
     st.session_state.secret = random.randint(low, high)
-
-# FIX: Refactored attempt initialization to begin at 0
-if "attempts" not in st.session_state:
     st.session_state.attempts = 0
-
-if "score" not in st.session_state:
     st.session_state.score = 0
-
-if "status" not in st.session_state:
     st.session_state.status = "playing"
-
-if "history" not in st.session_state:
     st.session_state.history = []
 
-#FIXME: Add a session state for difficulty to know when it's changed
 st.subheader("Make a guess")
 
 st.info(
