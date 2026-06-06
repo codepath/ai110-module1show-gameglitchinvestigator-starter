@@ -1,3 +1,4 @@
+# FIX: AI Agent migrated code to utils file
 def get_range_for_difficulty(difficulty: str):
     """Return (low, high) inclusive range for a given difficulty."""
     if difficulty == "Easy":
@@ -8,7 +9,7 @@ def get_range_for_difficulty(difficulty: str):
         return 1, 50
     return 1, 100
 
-
+# FIX: AI Agent migrated code to utils file
 def parse_guess(raw: str):
     """
     Parse user input into an int guess.
@@ -31,7 +32,8 @@ def parse_guess(raw: str):
 
     return True, value, None
 
-
+# FIX: AI Agent migrated code to utils file
+# FIX: AI Agent refactored hint messages
 def check_guess(guess, secret):
     """
     Compare guess to secret and return (outcome, message).
