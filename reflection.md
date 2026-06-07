@@ -37,18 +37,51 @@ After loading the application, I immediately noticed several issues.
 
 ## 2. How did you use AI as a teammate?
 
-- Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-- Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
-- Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
+> Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
+
+I used Anthropic's Claude Code for the code updates and Google's Gemini to answer some of my markdown questions.
+
+> Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
+
+One of the main problems I fixed was around the game hints offered to users based on their guess. 
+Claude suggested swapping the returned help text such that the "higher" was when the guess was too low and the "lower" was when the guess was too high.
+This suggestion was both helpful and correct.
+I verified the change a couple of ways. 
+First, I carefully read the suggestion, verifying what it was doing. 
+Second, I asked for tests of the various cases which I also verified were correct. 
+Finally, I ran the generated tests and the application.
+
+> Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
+
+Another problem I fixed was around the state management.
+While Claude's code suggestion was correct, the tests it suggested were not.
+The tests it wrote didn't actually test anything useful.
+Each test would mock an object, set the values directly on the mocked object, and verify the values.
+None of this relied on any of the production code, offering no safegaurds or quality assurance.
+I ultimately removed these tests as they provided no value.
 
 ---
 
 ## 3. Debugging and testing your fixes
 
-- How did you decide whether a bug was really fixed?
-- Describe at least one test you ran (manual or using pytest)  
-  and what it showed you about your code.
-- Did AI help you design or understand any tests? How?
+> How did you decide whether a bug was really fixed?
+
+I relied on the `pytest` automation to verify if a bug was really fixed. 
+I did also run the application, but that was only after the automation was passing.
+
+> Describe at least one test you ran (manual or using pytest) and what it showed you about your code.
+
+
+The simplest manual test I ran was loading the application.
+Since I fixed the state initialization around the attempt number, it was immediately apparent if this was resolved or not.
+This test demonstrated that my fix had been correct.
+
+One step further, I verified the rest of the state management changes by adjusting the difficulty setting and checking that the history and attempts were cleared.
+
+> Did AI help you design or understand any tests? How?
+
+Yes! Claude designed and wrote all the automation.
+It also updated the test configuration so that it would seamlessly work with the `pytest` command as that was originally causing failures.
 
 ---
 
