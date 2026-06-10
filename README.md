@@ -25,28 +25,35 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [x] Describe the game's purpose.
+- [x] Detail which bugs you found.
+- [x] Explain what fixes you applied.
 
 ## 📸 Demo Walkthrough
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Add a numer below "Enter your guess" textbox
+2. Click "Submit guess" button
+3. Read hint received and adjust next guess
+4. Repeat step 1-3 until number is guessed or ran out of guesses
+5. Click "New Game" to re-start a game
+6. Toggle "Show hint" to see clues for next guess or not.
 
-**Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
+**Screenshot** *(optional)*: ![image showing a winned game](image.png)
 
 ## 🧪 Test Results
 
 ```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+========================================================== test session starts ===========================================================
+platform darwin -- Python 3.13.13, pytest-9.0.3, pluggy-1.6.0
+rootdir: /Users/camila/ai110-module1show-gameglitchinvestigator-starter
+plugins: anyio-4.13.0
+collected 6 items                                                                                                                        
+
+tests/test_game_logic.py ......                                                                                                    [100%]
+
+=========================================================== 6 passed in 0.01s ============================================================
 ```
 
 ## 🚀 Stretch Features
