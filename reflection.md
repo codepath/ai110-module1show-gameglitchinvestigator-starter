@@ -30,8 +30,14 @@ Document at least 3 bugs you found. Add rows as needed.
 ## 2. How did you use AI as a teammate?
 
 - Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
+  - I used Claude agent
+  
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
+  - It suggested that in the update_score function, +5 were added ONLY when the attempt number was even, this was true (which I verified at first by re-reading the code section) & fixed it by deletting the "if" statement that checked for even numbers prior to  updating the score. 
+  
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
+  - On the previous example I was looking at the comparison between the outcome and message received it (I noticed it originally only checked for two of the four possible messages, hence updating the score poorly). It isntead catched another error mentioned before and did not refactor the section as I told it to. 
+  - I verified this by checking the corrected section of teh code and realizing while it  caught a mistake I had not yet told it to fix, it skipped the one I asked it to fix. This could be crucial since it diverts your attention for a "main" problem you were fixing & your focus switches to a new one before completting the original debugging. 
 
 ---
 
