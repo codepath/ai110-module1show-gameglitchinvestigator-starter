@@ -28,7 +28,10 @@ def parse_guess(raw: str):
 
     return True, value, None
 
-
+# FIXME: Logic Breaks Here
+# Guess is treated as a string on even attempts & int on odds
+#      Numbers should be compared as int, not string 
+# + when the guess is too high, it returns "Go HIGHER!" instead of "Go LOWER!" and vice versa when the guess is too low
 def check_guess(guess, secret):
     if guess == secret:
         return "Win", "🎉 Correct!"
@@ -46,7 +49,8 @@ def check_guess(guess, secret):
             return "Too High", "📈 Go HIGHER!"
         return "Too Low", "📉 Go LOWER!"
 
-
+# FIXME: Logic Breaks Here:
+# Score is not updated when system returns "🎉 Correct!", "📈 Go HIGHER!" or "📉 Go LOWER!"
 def update_score(current_score: int, outcome: str, attempt_number: int):
     if outcome == "Win":
         points = 100 - 10 * (attempt_number + 1)
@@ -91,7 +95,8 @@ st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
-
+# FIXME: Logic Breaks Here:
+# attempts should be set to 0 at the start of the game
 if "attempts" not in st.session_state:
     st.session_state.attempts = 1
 
@@ -146,7 +151,8 @@ if st.session_state.status != "playing":
 
 if submit:
     st.session_state.attempts += 1
-
+    # FIXME: Logic Breaks Here:
+    # history is not updated everytime, sometimes guesses are not added to history
     ok, guess_int, err = parse_guess(raw_guess)
 
     if not ok:
@@ -154,7 +160,8 @@ if submit:
         st.error(err)
     else:
         st.session_state.history.append(guess_int)
-
+        # FIXME: Logic Breaks Here:
+        # guess is parsed as str on even attempts & stays as int on odds. It should be int in both
         if st.session_state.attempts % 2 == 0:
             secret = str(st.session_state.secret)
         else:

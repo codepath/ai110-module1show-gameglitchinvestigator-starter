@@ -5,20 +5,27 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 ## 1. What was broken when you started?
 
 - What did the game look like the first time you ran it?
+  - It looked like a number guessing game in which the users can eithert enter a guess or start a new game.
+  - They can choose whether to get clues on their guesses (if the number is bigger or smaller than their last guess). 
+  
 - List at least two concrete bugs you noticed at the start  
-  (for example: "the hints were backwards").
+  - The hints are inacurrate (when the number is smaller than the target it says to aim lower, and when it is bigger it says to aim higher when hey should hint the opposite.)
+  - The target number sometimes goes out of range (higher than 100 or lower than 0)
+  - The history doe snot always record all guesses, some dissappear
+  - Once the game is over you cannot start a new game - the button does not work
+  - Attempts start at 1 even when no submission has been made
 
 **Bug Reproduction Log**
 
 Document at least 3 bugs you found. Add rows as needed.
 
-| Input | Expected Behavior | Actual Behavior | Console Output / Error |
-|-------|-------------------|-----------------|------------------------|
-| | | | |
-| | | | |
-| | | | |
+| Input | Expected Behavior   | Actual Behavior  | Console Output / Error |
+|-------|---------------------|------------------|------------------------|
+|   -5  | "out of range"      | "go LOWER"       |    None                |
+|   10  | Add to history      | number not added |    None                |
+|   20  |  "go LOWER"         |  "go HIGHER"     |    None                |
 
----
+---------------------------------------------------------------------------
 
 ## 2. How did you use AI as a teammate?
 
