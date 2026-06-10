@@ -1,3 +1,4 @@
+#FIX: modified the logic so that the ranges for different dificulties made sense 
 def get_range_for_difficulty(difficulty: str):
     """Return (low, high) inclusive range for a given difficulty."""
     if difficulty == "Easy":
@@ -8,7 +9,7 @@ def get_range_for_difficulty(difficulty: str):
         return 51, 100
     return 1, 100
 
-
+# FIX: added error handling for non-integer and empty inputs, and for floats
 def parse_guess(raw: str):
     """
     Parse user input into an int guess.
@@ -28,7 +29,7 @@ def parse_guess(raw: str):
 
     return True, value, None
 
-
+# FIX: simplified so it takes only integer convertible input 
 def check_guess(guess, secret):
     """
     Compare guess to secret and return (outcome, message).
@@ -47,18 +48,18 @@ def check_guess(guess, secret):
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
     """Update score based on outcome and attempt number."""
-    if outcome in ("Win", "🎉 Correct!"):
+    if outcome in ("Win"):
         points = 100 - 10 * (attempt_number + 1)
         if points < 10:
             points = 10
         return current_score + points
 
-    if outcome in ("Too High", "📉 Go LOWER!"):
+    if outcome in ("Too High"):
         if attempt_number % 2 == 0:
             return current_score + 5
         return current_score - 5
 
-    if outcome in ("Too Low", "📈 Go HIGHER!"):
+    if outcome in ("Too Low"):
         return current_score - 5
 
     return current_score
