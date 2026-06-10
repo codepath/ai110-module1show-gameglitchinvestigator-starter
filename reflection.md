@@ -30,14 +30,15 @@ Document at least 3 bugs you found. Add rows as needed.
 ## 2. How did you use AI as a teammate?
 
 - Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-  - I used Claude agent
+  - I used Claude agent in VS Code and asked clarifying questions of code details/errors and functions to ChatGPT
   
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
-  - It suggested that in the update_score function, +5 were added ONLY when the attempt number was even, this was true (which I verified at first by re-reading the code section) & fixed it by deletting the "if" statement that checked for even numbers prior to  updating the score. 
+  - ChatGPT suggested to use ValueError instead of Exception on the parse_guess() function, since I am aiming to not allow the system to accept inputs that are not already whole numbers - or string inputs that are directly parsed as int. 
+  - It did not suggest any code specific edits since I was simply sharing m,y thought process on while debating if it was viable or not. However, claude did change the code by adding ValueError instead of Exception
   
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
-  - On the previous example I was looking at the comparison between the outcome and message received it (I noticed it originally only checked for two of the four possible messages, hence updating the score poorly). It isntead catched another error mentioned before and did not refactor the section as I told it to. 
-  - I verified this by checking the corrected section of teh code and realizing while it  caught a mistake I had not yet told it to fix, it skipped the one I asked it to fix. This could be crucial since it diverts your attention for a "main" problem you were fixing & your focus switches to a new one before completting the original debugging. 
+  - When I was looking at the update_score function, I noticed it originally only checked for two of the four possible messages, hence updating the score poorly. After sharing this issue with the AI agent it told me that anothger "error", +5 were added ONLY when the attempt number was even, which I verified as untrue information while re-reading the code section, for it appears to follow a logic: when the attempt number is even it adds 5, when it is odd, it subtracts 5.  
+
 
 ---
 
