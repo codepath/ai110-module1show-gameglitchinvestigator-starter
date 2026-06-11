@@ -7,16 +7,18 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - What did the game look like the first time you ran it?
 - List at least two concrete bugs you noticed at the start  
   (for example: "the hints were backwards").
+  The hint was always guess lower even if you were to supposed to guess higher
+  It keeps saying guess lower even if you go pass your lower range.
 
 **Bug Reproduction Log**
-
+ 
 Document at least 3 bugs you found. Add rows as needed.
 
 | Input | Expected Behavior | Actual Behavior | Console Output / Error |
 |-------|-------------------|-----------------|------------------------|
-| | | | |
-| | | | |
-| | | | |
+| 64    | guess higher      | guess lower     | None                   |
+| -8    | out of range      | guess lower     | None                   |
+| 70    | guess lower       |guess lower      | None                   |
 
 ---
 
