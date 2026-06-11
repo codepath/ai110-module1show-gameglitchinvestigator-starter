@@ -1,0 +1,31 @@
+====================================================================
+BEFORE: linting_output — logic_utils.py
+Tools: flake8 7.3.0 | pycodestyle 2.14.0 | pydocstyle 6.3.0
+====================================================================
+
+--- flake8 ---
+(no issues)
+
+--- pycodestyle ---
+(no issues)
+
+--- pydocstyle ---
+logic_utils.py:1 at module level:
+        D100: Missing docstring in public module
+
+====================================================================
+AFTER: linting_output — logic_utils.py (post-docstring upgrade)
+====================================================================
+
+--- flake8 ---
+(no issues)
+
+--- pycodestyle ---
+(no issues)
+
+--- pydocstyle ---
+(no issues)
+
+====================================================================
+pytest: all 21 tests pass
+====================================================================

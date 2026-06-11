@@ -1,5 +1,6 @@
 import random
 import streamlit as st
+from logic_utils import guess_distance, closeness, history_to_rows, label_color
 
 def get_range_for_difficulty(difficulty: str):
     if difficulty == "Easy":
@@ -33,18 +34,20 @@ def check_guess(guess, secret):
     if guess == secret:
         return "Win", "🎉 Correct!"
 
+    # FIX: Swapped the hint text so "Too High" -> "Go LOWER!" and "Too Low" ->
+    # "Go HIGHER!" (AI-assisted fix via Claude Code, agent mode).
     try:
         if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
+            return "Too High", "📉 Go LOWER!"
         else:
-            return "Too Low", "📉 Go LOWER!"
+            return "Too Low", "📈 Go HIGHER!"
     except TypeError:
         g = str(guess)
         if g == secret:
             return "Win", "🎉 Correct!"
         if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
+            return "Too High", "📉 Go LOWER!"
+        return "Too Low", "📈 Go HIGHER!"
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
@@ -54,9 +57,10 @@ def update_score(current_score: int, outcome: str, attempt_number: int):
             points = 10
         return current_score + points
 
+    # FIX: "Too High" now always subtracts 5 points, matching "Too Low"
+    # instead of adding points on even attempts (AI-assisted fix via Claude
+    # Code, agent mode).
     if outcome == "Too High":
-        if attempt_number % 2 == 0:
-            return current_score + 5
         return current_score - 5
 
     if outcome == "Too Low":
@@ -64,7 +68,15 @@ def update_score(current_score: int, outcome: str, attempt_number: int):
 
     return current_score
 
-st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
+def render_summary_table(history, *, expanded=False):
+    rows = history_to_rows(history)
+    if not rows:
+        return  # no-op at import time / before first guess
+    with st.expander("📊 Session Summary", expanded=expanded):
+        st.dataframe(rows, use_container_width=True, hide_index=True)
+
+
+st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮", initial_sidebar_state="expanded")
 
 st.title("🎮 Game Glitch Investigator")
 st.caption("An AI-generated guessing game. Something is off.")
@@ -88,6 +100,20 @@ low, high = get_range_for_difficulty(difficulty)
 
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("📜 Guess History")
+_history = st.session_state.get("history", [])
+if not _history:
+    st.sidebar.caption("No guesses yet — make your first guess!")
+else:
+    _arrows = {"Too Low": "⬆️", "Too High": "⬇️", "Win": "✅", "Invalid": "⚠️"}
+    for _rec in reversed(_history):
+        _arrow = _arrows.get(_rec.get("outcome", ""), "")
+        _lbl = _rec.get("label", "")
+        st.sidebar.markdown(f"**#{_rec.get('attempt')}** {_rec.get('guess')} {_arrow} {_lbl}")
+        if _rec.get("fraction") is not None:
+            st.sidebar.progress(_rec["fraction"])
 
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
@@ -134,6 +160,10 @@ with col3:
 if new_game:
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(1, 100)
+    # FIX: Reset status back to "playing" here so "New Game" actually starts a
+    # fresh round instead of re-triggering the game-over guard below
+    # (AI-assisted fix via Claude Code, agent mode).
+    st.session_state.status = "playing"
     st.success("New game started.")
     st.rerun()
 
@@ -142,6 +172,7 @@ if st.session_state.status != "playing":
         st.success("You already won. Start a new game to play again.")
     else:
         st.error("Game over. Start a new game to try again.")
+    render_summary_table(st.session_state.get("history", []), expanded=True)
     st.stop()
 
 if submit:
@@ -150,11 +181,15 @@ if submit:
     ok, guess_int, err = parse_guess(raw_guess)
 
     if not ok:
-        st.session_state.history.append(raw_guess)
+        st.session_state.history.append({
+            "attempt": st.session_state.attempts,
+            "guess": raw_guess,
+            "outcome": "Invalid",
+            "fraction": None,
+            "label": "",
+        })
         st.error(err)
     else:
-        st.session_state.history.append(guess_int)
-
         if st.session_state.attempts % 2 == 0:
             secret = str(st.session_state.secret)
         else:
@@ -162,8 +197,20 @@ if submit:
 
         outcome, message = check_guess(guess_int, secret)
 
+        _dist = guess_distance(guess_int, st.session_state.secret)
+        _frac, _lbl = closeness(_dist, high - low)
+        st.session_state.history.append({
+            "attempt": st.session_state.attempts,
+            "guess": guess_int,
+            "outcome": outcome,
+            "fraction": _frac,
+            "label": _lbl,
+        })
+
         if show_hint:
             st.warning(message)
+            if _lbl:
+                st.markdown(f"### :{label_color(_lbl)}[{_lbl}] · {round(_frac * 100)}% there")
 
         st.session_state.score = update_score(
             current_score=st.session_state.score,
@@ -186,6 +233,11 @@ if submit:
                     f"The secret was {st.session_state.secret}. "
                     f"Score: {st.session_state.score}"
                 )
+
+render_summary_table(
+    st.session_state.get("history", []),
+    expanded=st.session_state.get("status") != "playing",
+)
 
 st.divider()
 st.caption("Built by an AI that claims this code is production-ready.")
