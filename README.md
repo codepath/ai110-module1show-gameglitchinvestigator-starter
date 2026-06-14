@@ -26,19 +26,32 @@ It wrote the code, ran away, and now the game is unplayable.
 ## 📝 Document Your Experience
 
 - [x] Describe the game's purpose.
+  - The game is an entertaining guessing number in which the user gets clues after entering their guesses. To make the game more challenging, thera a specific amount of times the user can try to guess, as well as different levels of difficulty.
 - [x] Detail which bugs you found.
+   1. The clues were innacurate
+   2. The game did not start again after losing
+   3. Difficulty categories were mixed up
+   4. History updated only some attempts
+   
 - [x] Explain what fixes you applied.
+   1. Fixed if statement in charge of giving clues so it worked accurately
+   2. Fixed setting state of "re-starting" game so th eplayer could succesfully try again after losing.
+   3. History now updates flawlessly.
 
 ## 📸 Demo Walkthrough
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. Add a numer below "Enter your guess" textbox
-2. Click "Submit guess" button
-3. Read hint received and adjust next guess
-4. Repeat step 1-3 until number is guessed or ran out of guesses
-5. Click "New Game" to re-start a game
-6. Toggle "Show hint" to see clues for next guess or not.
+1. User enters "60" as guess 
+2. Game returns "📉 Go LOWER!"
+3. User enters a gues of "55"
+4. Game says "📉 Go LOWER!"
+5. User enters a gues of 20
+6. Game returns "📈Go HIGHER!"
+7. User enters "45"
+8. Game returns: 
+   "🎉 Correct!   
+   You won! The secret was 45. Final score: 35" 
 
 **Screenshot** *(optional)*: ![image showing a winned game](image.png)
 
