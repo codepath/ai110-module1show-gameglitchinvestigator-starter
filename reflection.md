@@ -11,7 +11,7 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - List at least two concrete bugs you noticed at the start  
   - The hints are inacurrate (when the number is smaller than the target it says to aim lower, and when it is bigger it says to aim higher when hey should hint the opposite.)
   - The target number sometimes goes out of range (higher than 100 or lower than 0)
-  - The history doe snot always record all guesses, some dissappear
+  - The history does not always record all guesses, some dissappear
   - Once the game is over you cannot start a new game - the button does not work
   - Attempts start at 1 even when no submission has been made
 

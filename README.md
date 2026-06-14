@@ -31,12 +31,12 @@ It wrote the code, ran away, and now the game is unplayable.
    1. The clues were innacurate
    2. The game did not start again after losing
    3. Difficulty categories were mixed up
-   4. History updated only some attempts
+   4. Attempts allowed was shifted by one less
    
 - [x] Explain what fixes you applied.
    1. Fixed if statement in charge of giving clues so it worked accurately
    2. Fixed setting state of "re-starting" game so th eplayer could succesfully try again after losing.
-   3. History now updates flawlessly.
+   3. Attempts are counted accurately 
 
 ## 📸 Demo Walkthrough
 

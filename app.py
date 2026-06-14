@@ -32,7 +32,7 @@ if "secret" not in st.session_state:
 # FIXME: Logic Breaks Here:
 # attempts should be set to 0 at the start of the game
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
+    st.session_state.attempts = 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -97,12 +97,7 @@ if submit:
         st.error(err)
     else:
         st.session_state.history.append(guess_int)
-        # FIXME: Logic Breaks Here:
-        # guess is parsed as str on even attempts & stays as int on odds. It should be int in both
-        if st.session_state.attempts % 2 == 0:
-            secret = str(st.session_state.secret)
-        else:
-            secret = st.session_state.secret
+        secret = st.session_state.secret
 
         outcome, message = check_guess(guess_int, secret)
 
@@ -130,6 +125,41 @@ if submit:
                     f"The secret was {st.session_state.secret}. "
                     f"Score: {st.session_state.score}"
                 )
+
+valid_guesses = [g for g in st.session_state.history if isinstance(g, int) and 0 <= g <= 100]
+
+if valid_guesses:
+    st.subheader("Guess Map")
+
+    stars_html = ""
+    for i, guess in enumerate(valid_guesses):
+        pct = (guess - 1) / 99 * 100
+        is_latest = (i == len(valid_guesses) - 1)
+        star_char = "★" if is_latest else "☆"
+        color = "#111111" if is_latest else "#999999"
+
+        stars_html += (
+            f'<div style="position:absolute; left:{pct:.2f}%; transform:translateX(-50%); '
+            f'bottom:14px; font-size:22px; color:{color}; line-height:1;">{star_char}</div>'
+            f'<div style="position:absolute; left:{pct:.2f}%; transform:translateX(-50%); '
+            f'top:16px; font-size:10px; color:{color}; white-space:nowrap;">{guess}</div>'
+        )
+
+    bar_html = (
+        '<div style="margin: 50px 5px 40px 5px; position:relative;">'
+        '<div style="width:100%; height:10px; '
+        'background: linear-gradient(to right, #2196F3, #9C27B0); '
+        'border-radius:5px; position:relative;">'
+        + stars_html +
+        '</div>'
+        '<div style="display:flex; justify-content:space-between; '
+        'margin-top:22px; font-size:12px; color:#666;">'
+        '<span>1</span><span>25</span><span>50</span><span>75</span><span>100</span>'
+        '</div>'
+        '</div>'
+    )
+
+    st.markdown(bar_html, unsafe_allow_html=True)
 
 st.divider()
 st.caption("Built by an AI that claims this code is production-ready.")
