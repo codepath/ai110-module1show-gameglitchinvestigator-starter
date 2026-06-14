@@ -34,10 +34,13 @@ def check_guess(guess, secret):
     """
     Compare guess to secret and return (outcome, message).
 
-    outcome examples: "Win", "Too High", "Too Low"
+    outcome examples: "Win", "Too High", "Too Low", "Invalid"
     """
     guess = int(guess)
     secret = int(secret)
+
+    if guess < 0 or guess > 100:
+        return "Invalid", "Please enter a number between 0 and 100."
 
     if guess == secret:
         return "Win", "🎉 Correct!"
