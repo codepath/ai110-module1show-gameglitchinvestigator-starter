@@ -28,7 +28,8 @@ def parse_guess(raw: str):
 
     return True, value, None
 
-
+# bugfix 2 there needs to be a preceding check that the guess is within the low high from get_range_for_difficulty 
+# bugfix 3 needs to swap Go HIGHER and Go Lower (g > secret return "Too High", "📉 Go LOWER!")
 def check_guess(guess, secret):
     if guess == secret:
         return "Win", "🎉 Correct!"
@@ -107,7 +108,7 @@ if "history" not in st.session_state:
 st.subheader("Make a guess")
 
 st.info(
-    f"Guess a number between 1 and 100. "
+    f"Guess a number between {low} and {high}. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
 
@@ -131,6 +132,7 @@ with col2:
 with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
+#bugfix 2 randint should be in sync with low high from get_range_for_difficulty 
 if new_game:
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(1, 100)
