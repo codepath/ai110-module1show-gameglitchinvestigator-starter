@@ -28,24 +28,22 @@ def parse_guess(raw: str):
 
     return True, value, None
 
-# bugfix 2 there needs to be a preceding check that the guess is within the low high from get_range_for_difficulty 
-# bugfix 3 needs to swap Go HIGHER and Go Lower (g > secret return "Too High", "📉 Go LOWER!")
 def check_guess(guess, secret):
     if guess == secret:
         return "Win", "🎉 Correct!"
 
     try:
         if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
+            return "Too High", "📉 Go LOWER!"
         else:
-            return "Too Low", "📉 Go LOWER!"
+            return "Too Low", "📈 Go HIGHER!"
     except TypeError:
         g = str(guess)
         if g == secret:
             return "Win", "🎉 Correct!"
         if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
+            return "Too High", "📉 Go LOWER!"
+        return "Too Low", "📈 Go HIGHER!"
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
@@ -132,10 +130,9 @@ with col2:
 with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
-#bugfix 2 randint should be in sync with low high from get_range_for_difficulty 
 if new_game:
     st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+    st.session_state.secret = random.randint(low, high)
     st.success("New game started.")
     st.rerun()
 
@@ -154,6 +151,9 @@ if submit:
     if not ok:
         st.session_state.history.append(raw_guess)
         st.error(err)
+    elif not (low <= guess_int <= high):
+        st.session_state.history.append(guess_int)
+        st.error(f"Out of range. Pick a number between {low} and {high}.")
     else:
         st.session_state.history.append(guess_int)
 
