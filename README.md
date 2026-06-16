@@ -25,28 +25,33 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [x] The game's purpose is to let the player guess a hidden number in a Streamlit app while learning how app state and logic bugs can break a simple game.
+- [x] I found that the hint text was backwards, so guesses that were too high told the player to go higher and guesses that were too low told the player to go lower.
+- [x] I also found state-related issues where the secret number and attempts count could behave inconsistently across reruns.
+- [x] I fixed the logic by separating the helper functions into `logic_utils.py`, then using session state more consistently so the game state stays stable during play.
 
 ## 📸 Demo Walkthrough
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Open the app with `python -m streamlit run app.py` and choose a difficulty level from the sidebar.
+2. Make an initial guess, such as 40, and the app responds with **Too Low** and the **Go HIGHER!** hint.
+3. Make a second guess, such as 70, and the app responds with **Too High** and the **Go LOWER!** hint.
+4. Keep adjusting the guess based on the hint until the secret number is found and the game shows the win message.
+5. Click **New Game** to reset the secret, score, attempts, and history, then start another round.
 
 **Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
 
 ## 🧪 Test Results
 
 ```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.3, pluggy-1.6.0
+collected 3 items
+
+tests/test_game_logic.py ...                                             [100%]
+
+============================== 3 passed in 0.01s ==============================
 ```
 
 ## 🚀 Stretch Features
