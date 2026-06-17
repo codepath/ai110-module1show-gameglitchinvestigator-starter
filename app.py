@@ -1,78 +1,20 @@
 import random
 import streamlit as st
 
-def get_range_for_difficulty(difficulty: str):
-    if difficulty == "Easy":
-        return 1, 20
-    if difficulty == "Normal":
-        return 1, 100
-    if difficulty == "Hard":
-        return 1, 50
-    return 1, 100
-
-
-def parse_guess(raw: str):
-    if raw is None:
-        return False, None, "Enter a guess."
-
-    if raw == "":
-        return False, None, "Enter a guess."
-
-    try:
-        if "." in raw:
-            value = int(float(raw))
-        else:
-            value = int(raw)
-    except Exception:
-        return False, None, "That is not a number."
-
-    return True, value, None
-
-
-def check_guess(guess, secret):
-    # FIXME: The hint messages are backwards. "Too High" tells the player to go
-    # HIGHER and "Too Low" tells them to go LOWER -- both are inverted.
-    if guess == secret:
-        return "Win", "🎉 Correct!"
-
-    try:
-        if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
-        else:
-            return "Too Low", "📉 Go LOWER!"
-    except TypeError:
-        g = str(guess)
-        if g == secret:
-            return "Win", "🎉 Correct!"
-        if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
-
-
-def update_score(current_score: int, outcome: str, attempt_number: int):
-    # FIXME: Scoring is erratic. A wrong "Too High" guess sometimes ADDS points
-    # (on even attempts) and sometimes subtracts. Wrong guesses should never
-    # reward the player.
-    if outcome == "Win":
-        points = 100 - 10 * (attempt_number + 1)
-        if points < 10:
-            points = 10
-        return current_score + points
-
-    if outcome == "Too High":
-        if attempt_number % 2 == 0:
-            return current_score + 5
-        return current_score - 5
-
-    if outcome == "Too Low":
-        return current_score - 5
-
-    return current_score
+# FIX: Core game logic was refactored out of app.py into logic_utils.py so it
+# can be unit-tested with pytest. app.py is now just the Streamlit UI layer.
+from logic_utils import (
+    get_range_for_difficulty,
+    parse_guess,
+    check_guess,
+    hint_for_outcome,
+    update_score,
+)
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
 
 st.title("🎮 Game Glitch Investigator")
-st.caption("An AI-generated guessing game. Something is off.")
+st.caption("An AI-generated guessing game — now debugged.")
 
 st.sidebar.header("Settings")
 
@@ -98,8 +40,8 @@ if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
 if "attempts" not in st.session_state:
-    # FIXME: Starts at 1, so "Attempts left" is off by one before the first guess.
-    st.session_state.attempts = 1
+    # FIX: Start at 0 so "Attempts left" is correct before the first guess.
+    st.session_state.attempts = 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -112,9 +54,9 @@ if "history" not in st.session_state:
 
 st.subheader("Make a guess")
 
-# FIXME: Range is hardcoded to "1 and 100" even on Easy (1-20) / Hard (1-50).
+# FIX: Use the actual difficulty range instead of a hardcoded "1 and 100".
 st.info(
-    f"Guess a number between 1 and 100. "
+    f"Guess a number between {low} and {high}. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
 
@@ -139,11 +81,14 @@ with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
 if new_game:
-    # FIXME: Does not reset score/status/history, and ignores the difficulty
-    # range (hardcoded 1-100). After a loss, status stays "lost" so the next
-    # block calls st.stop() and the player is locked out.
+    # FIX: Reset the FULL game state (attempts, score, status, history) and
+    # draw the secret from the current difficulty range so "New Game" actually
+    # unlocks play after a win or loss.
     st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+    st.session_state.secret = random.randint(low, high)
+    st.session_state.score = 0
+    st.session_state.status = "playing"
+    st.session_state.history = []
     st.success("New game started.")
     st.rerun()
 
@@ -155,28 +100,21 @@ if st.session_state.status != "playing":
     st.stop()
 
 if submit:
-    st.session_state.attempts += 1
-
     ok, guess_int, err = parse_guess(raw_guess)
 
     if not ok:
-        st.session_state.history.append(raw_guess)
+        # FIX: Don't burn an attempt on invalid input; just show the error.
         st.error(err)
     else:
+        st.session_state.attempts += 1
         st.session_state.history.append(guess_int)
 
-        # FIXME: On even attempts the secret is cast to a string, so an int
-        # guess is compared against a str -- the player can never win on an
-        # even attempt and the Higher/Lower hint becomes lexicographic nonsense.
-        if st.session_state.attempts % 2 == 0:
-            secret = str(st.session_state.secret)
-        else:
-            secret = st.session_state.secret
-
-        outcome, message = check_guess(guess_int, secret)
+        # FIX: Compare the int guess against the int secret every time. The old
+        # code cast the secret to str on even attempts, breaking == and >.
+        outcome = check_guess(guess_int, st.session_state.secret)
 
         if show_hint:
-            st.warning(message)
+            st.warning(hint_for_outcome(outcome))
 
         st.session_state.score = update_score(
             current_score=st.session_state.score,
@@ -188,7 +126,8 @@ if submit:
             st.balloons()
             st.session_state.status = "won"
             st.success(
-                f"You won! The secret was {st.session_state.secret}. "
+                f"You won in {st.session_state.attempts} attempts! "
+                f"The secret was {st.session_state.secret}. "
                 f"Final score: {st.session_state.score}"
             )
         else:
@@ -201,4 +140,4 @@ if submit:
                 )
 
 st.divider()
-st.caption("Built by an AI that claims this code is production-ready.")
+st.caption("Debugged by the Game Glitch Investigator. 🕵️")
