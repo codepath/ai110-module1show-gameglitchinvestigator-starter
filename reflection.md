@@ -24,30 +24,61 @@ Document at least 3 bugs you found. Add rows as needed.
 
 ## 2. How did you use AI as a teammate?
 
-- Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-- Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
-- Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
+I used an AI coding assistant (Claude) as a pair programmer to locate the bugs,
+refactor the logic into `logic_utils.py`, and generate the pytest cases. I drove
+the process — choosing which bugs to fix first and reviewing every diff before
+accepting it.
+
+- **A correct suggestion:** The AI proposed having `check_guess` return only the
+  outcome string (`"Win"`/`"Too High"`/`"Too Low"`) and moving the hint text into
+  a separate `hint_for_outcome` helper. I verified this by running the starter
+  tests, which assert `check_guess(60, 50) == "Too High"` — they only pass with
+  a single-string return, so the split was clearly right.
+- **A misleading suggestion:** An early suggestion was to "fix" the even-attempt
+  branch by also casting the *guess* to a string so the types matched. That makes
+  the comparison run without error but compares numbers lexicographically
+  (`"9" > "100"` is `True`), so it doesn't actually fix anything. I rejected it
+  and instead deleted the str-cast entirely so the comparison stays numeric,
+  then added `test_string_comparison_regression` to prove `check_guess(9, 100)`
+  returns "Too Low".
 
 ---
 
 ## 3. Debugging and testing your fixes
 
-- How did you decide whether a bug was really fixed?
-- Describe at least one test you ran (manual or using pytest)  
-  and what it showed you about your code.
-- Did AI help you design or understand any tests? How?
+- I decided a bug was fixed only when (a) I could reproduce the old behavior, (b)
+  a focused test failed on the old code and passed on the new code, and (c) the
+  live Streamlit app behaved correctly.
+- Concrete test: `test_string_comparison_regression` checks `check_guess(9, 100)
+  == "Too Low"`. On the original code the even-attempt str-cast would have made
+  this lexicographic ("9" > "100" → "Too High"), so the test pins down exactly
+  the bug I removed. Running `pytest` went from 3 failing (NotImplementedError
+  stubs) to 15 passing.
+- AI helped me brainstorm edge cases I hadn't thought of — negative numbers,
+  decimals, and very large values — which became the Challenge 1 test suite.
 
 ---
 
 ## 4. What did you learn about Streamlit and state?
 
-- How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
+Streamlit re-runs the *entire* script top-to-bottom on every interaction (every
+button click or text entry). So any normal variable is recreated from scratch
+each time — which is exactly why the secret number seemed to "change": calling
+`random.randint` on a plain variable would re-roll it on every rerun. The fix is
+`st.session_state`, a dictionary that survives reruns. I'd explain it to a friend
+like this: the script is a recipe Streamlit re-cooks from the top every time you
+touch anything, and `session_state` is the fridge where you stash things you want
+to still be there next time.
 
 ---
 
 ## 5. Looking ahead: your developer habits
 
-- What is one habit or strategy from this project that you want to reuse in future labs or projects?
-  - This could be a testing habit, a prompting strategy, or a way you used Git.
-- What is one thing you would do differently next time you work with AI on a coding task?
-- In one or two sentences, describe how this project changed the way you think about AI generated code.
+- **Habit to reuse:** writing a small failing test that reproduces a bug *before*
+  fixing it, then watching it go green. It turns "I think it works" into proof.
+- **Do differently:** I'd be more skeptical of AI fixes that make an error
+  *disappear* without addressing the root cause (like the cast-the-guess-too
+  suggestion) — running, not just reading, is what caught it.
+- This project made me treat AI-generated code as a confident first draft, not a
+  finished product: helpful for speed, but it needs a human to verify the logic
+  and the edge cases.
