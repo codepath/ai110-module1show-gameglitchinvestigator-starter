@@ -14,9 +14,11 @@ Document at least 3 bugs you found. Add rows as needed.
 
 | Input | Expected Behavior | Actual Behavior | Console Output / Error |
 |-------|-------------------|-----------------|------------------------|
-| | | | |
-| | | | |
-| | | | |
+| Guess `60` when secret is `50` (odd attempt) | Hint should say "Go LOWER" | Hint said "📈 Go HIGHER!" (backwards) | None — silent logic bug |
+| Guess the exact secret on an even-numbered attempt | "🎉 Correct!" / win | Marked wrong; Higher/Lower hint random | `int > str` comparison swallowed by `try/except TypeError`, falls back to string compare |
+| Click "New Game 🔁" after losing | Fresh playable game | Game stays locked ("Game over"), score/history not cleared | None — `status` never reset, `st.stop()` fires |
+| Open game on Easy (range 1–20) | Info shows "between 1 and 20" | Info always shows "between 1 and 100" | None |
+| Make several wrong guesses | Score stays flat or drops | Score sometimes *rises* on a wrong guess | None — `update_score` adds +5 on even "Too High" |
 
 ---
 

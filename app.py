@@ -30,6 +30,8 @@ def parse_guess(raw: str):
 
 
 def check_guess(guess, secret):
+    # FIXME: The hint messages are backwards. "Too High" tells the player to go
+    # HIGHER and "Too Low" tells them to go LOWER -- both are inverted.
     if guess == secret:
         return "Win", "🎉 Correct!"
 
@@ -48,6 +50,9 @@ def check_guess(guess, secret):
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
+    # FIXME: Scoring is erratic. A wrong "Too High" guess sometimes ADDS points
+    # (on even attempts) and sometimes subtracts. Wrong guesses should never
+    # reward the player.
     if outcome == "Win":
         points = 100 - 10 * (attempt_number + 1)
         if points < 10:
@@ -93,6 +98,7 @@ if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
 if "attempts" not in st.session_state:
+    # FIXME: Starts at 1, so "Attempts left" is off by one before the first guess.
     st.session_state.attempts = 1
 
 if "score" not in st.session_state:
@@ -106,6 +112,7 @@ if "history" not in st.session_state:
 
 st.subheader("Make a guess")
 
+# FIXME: Range is hardcoded to "1 and 100" even on Easy (1-20) / Hard (1-50).
 st.info(
     f"Guess a number between 1 and 100. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
@@ -132,6 +139,9 @@ with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
 if new_game:
+    # FIXME: Does not reset score/status/history, and ignores the difficulty
+    # range (hardcoded 1-100). After a loss, status stays "lost" so the next
+    # block calls st.stop() and the player is locked out.
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(1, 100)
     st.success("New game started.")
@@ -155,6 +165,9 @@ if submit:
     else:
         st.session_state.history.append(guess_int)
 
+        # FIXME: On even attempts the secret is cast to a string, so an int
+        # guess is compared against a str -- the player can never win on an
+        # even attempt and the Higher/Lower hint becomes lexicographic nonsense.
         if st.session_state.attempts % 2 == 0:
             secret = str(st.session_state.secret)
         else:
