@@ -33,11 +33,12 @@ It wrote the code, ran away, and now the game is unplayable.
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. To start the game input the command 'python3 -m streamlit run app.py' in the terminal. This will open the game in a browser with the title 'Game Glitch Investigator'
+2. In the left sidebar the user has a option of difficulty levels (Easy, Normal, Hard). Each level has a range the user can guess to, but also it showcases the number of attempts the user has in that level.
+3. Type a number into 'Enter your guess' box and click 'Submit Guess.' The game will compare your guess with the secret number, with that comparison it will either tell you if your guess is 'Too Low' or 'Too High.' This will point you to either try to re-guess based on the prompt you were given.
+4. Keep guessing and use the hints to narrow it down. Each guess is recorded so, beware of your attempts. All of that will be displayed in Developer Debug Info panel.
+5. When you guess the secret correctly, the game will prompt you with balloons and a congralutations text. It will also display your final score
+6. Click 'New Game' to start over, this will restart your attempts, score, and the secret number. Basically all the history from the previous game is no longer present.
 
 **Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
 
@@ -46,7 +47,15 @@ Describe your fixed game in numbered steps so a reader can follow along without 
 ```
 # Paste your pytest output here, e.g.:
 # pytest tests/
-# ========================= X passed in 0.XXs =========================
+======================================================== test session starts ========================================================
+platform darwin -- Python 3.14.0, pytest-9.0.3, pluggy-1.6.0
+rootdir: /Users/brooklynharden/CodePath/ai110-module1show-gameglitchinvestigator-starter
+plugins: anyio-4.13.0
+collected 3 items                                                                                                                   
+
+tests/test_game_logic.py ...                                                                                                  [100%]
+
+========================================================= 3 passed in 0.01s =========================================================
 ```
 
 ## 🚀 Stretch Features
