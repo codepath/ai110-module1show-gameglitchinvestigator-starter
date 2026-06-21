@@ -1,6 +1,6 @@
 import pytest
 
-from logic_utils import check_guess, update_score
+from logic_utils import check_guess, update_score, parse_guess
 
 
 def test_winning_guess():
@@ -73,3 +73,45 @@ def test_win_points_decrease_with_more_attempts():
 def test_win_points_floor_at_ten():
     # Late wins are floored at 10 points, never negative.
     assert update_score(0, "Win", 20) == 10
+
+
+# --- Edge case 1: out-of-range / negative input ---
+
+@pytest.mark.parametrize("raw", ["0", "-5", "21", "1000"])
+def test_parse_guess_rejects_out_of_range(raw):
+    # On Easy (1-20), anything below 1 or above 20 must be rejected with a
+    # helpful message instead of being accepted as a valid guess.
+    ok, value, err = parse_guess(raw, low=1, high=20)
+    assert ok is False
+    assert value is None
+    assert "between 1 and 20" in err
+
+
+@pytest.mark.parametrize("raw, expected", [("1", 1), ("20", 20), ("10", 10)])
+def test_parse_guess_accepts_in_range_including_bounds(raw, expected):
+    # The bounds themselves are inclusive and must be accepted.
+    ok, value, err = parse_guess(raw, low=1, high=20)
+    assert ok is True
+    assert value == expected
+    assert err is None
+
+
+def test_parse_guess_still_rejects_non_numbers_without_crashing():
+    # Range checking must not break the "not a number" path: "abc" should
+    # return a clean error, not raise ValueError.
+    ok, value, err = parse_guess("abc", low=1, high=100)
+    assert ok is False
+    assert err == "That is not a number."
+
+
+# --- Edge case 3: score must never go negative ---
+
+def test_wrong_guess_does_not_push_score_below_zero():
+    # A wrong guess at score 0 must clamp to 0, not -5.
+    assert update_score(0, "Too Low", 3) == 0
+    assert update_score(0, "Too High", 3) == 0
+
+
+def test_wrong_guess_clamps_low_score_to_zero():
+    # 3 lost in one wrong guess clamps to 0 rather than going negative.
+    assert update_score(3, "Too Low", 2) == 0
