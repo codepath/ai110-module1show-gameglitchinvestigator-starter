@@ -1,13 +1,19 @@
 import random
 import streamlit as st
 
+from logic_utils import check_guess
+
+
 def get_range_for_difficulty(difficulty: str):
+    # Bug fix: ranges now grow with difficulty (a larger range = more numbers
+    # to guess = harder). Previously Normal (1-100) was harder than Hard
+    # (1-50). Order is now Easy < Normal < Hard.
     if difficulty == "Easy":
         return 1, 20
     if difficulty == "Normal":
-        return 1, 100
-    if difficulty == "Hard":
         return 1, 50
+    if difficulty == "Hard":
+        return 1, 100
     return 1, 100
 
 
@@ -27,24 +33,6 @@ def parse_guess(raw: str):
         return False, None, "That is not a number."
 
     return True, value, None
-
-
-def check_guess(guess, secret):
-    if guess == secret:
-        return "Win", "🎉 Correct!"
-
-    try:
-        if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
-        else:
-            return "Too Low", "📉 Go LOWER!"
-    except TypeError:
-        g = str(guess)
-        if g == secret:
-            return "Win", "🎉 Correct!"
-        if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
@@ -78,8 +66,8 @@ difficulty = st.sidebar.selectbox(
 )
 
 attempt_limit_map = {
-    "Easy": 6,
-    "Normal": 8,
+    "Easy": 8,
+    "Normal": 6,
     "Hard": 5,
 }
 attempt_limit = attempt_limit_map[difficulty]
@@ -93,7 +81,10 @@ if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
+    # Bug fix: baseline must be 0 (guesses made so far). The submit handler
+    # increments before evaluating, so starting at 1 caused a first-game
+    # off-by-one (showed one fewer attempt and lost one guess early).
+    st.session_state.attempts = 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -106,8 +97,9 @@ if "history" not in st.session_state:
 
 st.subheader("Make a guess")
 
+# Bug fix: use the actual difficulty range instead of a hardcoded 1-100.
 st.info(
-    f"Guess a number between 1 and 100. "
+    f"Guess a number between {low} and {high}. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
 
@@ -132,8 +124,14 @@ with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
 if new_game:
+    # Bug fix: a full reset must clear status/score/history (not just
+    # attempts + secret), or the post-game guard keeps the game stuck.
+    # Also use the difficulty range instead of a hardcoded 1-100.
     st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+    st.session_state.secret = random.randint(low, high)
+    st.session_state.score = 0
+    st.session_state.status = "playing"
+    st.session_state.history = []
     st.success("New game started.")
     st.rerun()
 
