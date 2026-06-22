@@ -32,6 +32,9 @@ coverage.xml
 # Logs
 *.log
 
+# Runtime-generated player data
+high_scores.json
+
 # OS generated files
 .DS_Store
 Thumbs.db
