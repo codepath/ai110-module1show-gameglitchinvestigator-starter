@@ -1,0 +1,24 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.13, pytest-9.1.1, pluggy-1.6.0 -- /home/pouya/Documents/codepath-ai110/ai110-ai-music-sorter/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/pouya/Documents/codepath-ai110/ai110-module1show-gameglitchinvestigator-starter
+plugins: anyio-4.13.0
+collecting ... collected 15 items
+
+tests/test_game_logic.py::test_winning_guess PASSED                      [  6%]
+tests/test_game_logic.py::test_guess_too_high PASSED                     [ 13%]
+tests/test_game_logic.py::test_guess_too_low PASSED                      [ 20%]
+tests/test_game_logic.py::test_parse_guess_non_numeric_string PASSED     [ 26%]
+tests/test_game_logic.py::test_parse_guess_empty_string PASSED           [ 33%]
+tests/test_game_logic.py::test_parse_guess_none PASSED                   [ 40%]
+tests/test_game_logic.py::test_parse_guess_negative_number PASSED        [ 46%]
+tests/test_game_logic.py::test_parse_guess_float_string PASSED           [ 53%]
+tests/test_game_logic.py::test_parse_guess_valid_integer PASSED          [ 60%]
+tests/test_game_logic.py::test_score_only_increases_on_win PASSED        [ 66%]
+tests/test_game_logic.py::test_score_only_increases_on_too_low PASSED    [ 73%]
+tests/test_game_logic.py::test_score_win_first_attempt PASSED            [ 80%]
+tests/test_game_logic.py::test_score_win_clamped_at_minimum PASSED       [ 86%]
+tests/test_game_logic.py::test_difficulty_hard_is_harder_than_normal PASSED [ 93%]
+tests/test_game_logic.py::test_difficulty_easy_range PASSED              [100%]
+
+============================== 15 passed in 0.01s ==============================
