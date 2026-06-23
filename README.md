@@ -25,28 +25,33 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- The game's purpose is to be able to input numbers in order to guess the value of the mystery target number.
+- The game had multiple bugs that impacted gameplay. The "New Game" button does not function correctly after a win or loss, causing the game to become stuck and requiring a full page refresh to restart. Additionally, pressing the Enter key does not submit a guess despite the UI suggesting it should, forcing users to click the "Submit Guess" button instead. The attempts counter is incorrectly initialized at 1, and users often need to press the "Submit Guess" button twice before receiving feedback, with some guesses not being recorded on the first click. The hint system is also unreliable, occasionally providing incorrect guidance (e.g., suggesting to guess higher when the input is already above the target number). Furthermore, the "New Game" button only works while the game is still in progress. Input validation is flawed, as non-integer values are still accepted and stored.
+- The fixes for this app were: The game logic was moved into a separate module, making the main app easier to read and maintain. Added a start_new_game() function, which makes sure session state variables (like attempts, score, and history) reset correctly, fixing issues where the game would get stuck or start with incorrect values. Reworked the st.form in order to allow the Enter key to properly submit guesses and prevent the need to click the submit button multiple times. Input validation now happens before updating the game state. The new game button resets the game at any time using st.rerun(). Made sure feedback is accurate and consistent.
 
 ## 📸 Demo Walkthrough
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. User sets difficulty to normal
+2. Makes a guess of 80
+3. Game returns "Too High"
+4. User enters a guess of 78 → "Too Low"
+5. Score updates correctly after each guess
+6. Game ends after the correct guess
 
 **Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
 
 ## 🧪 Test Results
 
 ```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+tests/test_game_logic.py::test_winning_guess PASSED                      [ 20%]
+tests/test_game_logic.py::test_guess_too_high PASSED                     [ 40%]
+tests/test_game_logic.py::test_guess_too_low PASSED                      [ 60%]
+tests/test_game_logic.py::test_parse_guess_only_accepts_integers PASSED  [ 80%]
+tests/test_game_logic.py::test_hint_direction_is_correct PASSED          [100%]
+
+============================== 5 passed in 0.02s ===============================
 ```
 
 ## 🚀 Stretch Features
