@@ -26,18 +26,24 @@ It wrote the code, ran away, and now the game is unplayable.
 ## 📝 Document Your Experience
 
 - [ ] Describe the game's purpose.
+The game's purpose is to illustrate how bugs can be detrimental to the player's experience to where the player is constantly sabotaged from ever guessing the secret number if the bugs make the game impossible to play. 
 - [ ] Detail which bugs you found.
+I found several bugs in the game that make it difficult for anyone to play. First, there was a bug with the hints as the player would receive incorrect hints from their guesses to find the secret number. Secondly, there was a bug with the restart button where the player couldn't restart the game after presssing the option as they either correctly guess the secret number or they ran out of attempts that a new secret number would appear, but the player couldn't enter their guesses anymore. Finally, there was a bug with setting the game's difficulty as the game would always default to Normal difficulty where the player only had the option to guess a number in the range of 1 through 200, and not have the other two difficulty options, such as Easy and Hard.
 - [ ] Explain what fixes you applied.
+I focused on fixing two bugs in the game. First, I applied fixes to repair the hints bug where I coerced the secret variable to become an integer, and changed the sign in a comparison statement to be '<' in a function so that the player is being provided with the correct hints to have a better chance at guessing the secret number. Next, I applied fixes to repair the difficulty bug where I made a wider range for the game's Hard difficulty to have values from 1 through 200, and ensured the game read the low and high values in correspondance to the difficulty so that the player is guessing a secret number that falls within the range of numbers, which is dependent on the difficulty option chosen beforehand. 
 
 ## 📸 Demo Walkthrough
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Game is set to Normal difficulty by default (range of 1-100)
+2. Player guesses the number 40
+3. Game returns "Go LOWER!"
+4. Player guesses the number 30
+5. Game returns "Go HIGHER!"
+6. Score is updated correctly for each guess made by the player
+7. Game ends after the correct guess (First Option)
+8. Game ends after all attempts have been used (Second Option)
 
 **Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
 
