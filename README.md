@@ -25,19 +25,19 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [The purpose of the game is for the user to have fun guessing numbers between 1 and 100 ]
+- [ I only fixed two bugs but there were more such as: wrong hints, attempts left decrements wrongly, difficulty level gave unintuitive attempts, enter button not working on keypad, out of bounds guesses not checked etc.]
+- [ The fixes I applied were just wrong hints,the enter key not working, and out of bounds guesses]
 
 ## 📸 Demo Walkthrough
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Open the browser
+2. User guesses 70
+3. User recieves hint of too high
+4. User points decrements and the number of attempts left decrement
+5. User guesses 65 and is correct and game ends
 
 **Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
 
