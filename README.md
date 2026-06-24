@@ -25,30 +25,62 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [x] Describe the game's purpose.
+  - The game is an entertaining guessing number in which the user gets clues after entering their guesses. To make the game more challenging, thera a specific amount of times the user can try to guess, as well as different levels of difficulty.
+- [x] Detail which bugs you found.
+   1. The clues were innacurate
+   2. The game did not start again after losing
+   3. Difficulty categories were mixed up
+   4. Attempts allowed was shifted by one less
+   
+- [x] Explain what fixes you applied.
+   1. Fixed if statement in charge of giving clues so it worked accurately
+   2. Fixed setting state of "re-starting" game so th eplayer could succesfully try again after losing.
+   3. Attempts are counted accurately 
 
 ## 📸 Demo Walkthrough
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. User enters "60" as guess 
+2. Game returns "📉 Go LOWER!"
+3. User enters a gues of "55"
+4. Game says "📉 Go LOWER!"
+5. User enters a gues of 20
+6. Game returns "📈Go HIGHER!"
+7. User enters "45"
+8. Game returns: 
+   "🎉 Correct!   
+   You won! The secret was 45. Final score: 35" 
 
-**Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
+**Screenshot** *(optional)*: ![image showing a winned game](image.png)
 
 ## 🧪 Test Results
 
 ```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+========================================================== test session starts ===========================================================
+platform darwin -- Python 3.13.13, pytest-9.0.3, pluggy-1.6.0
+rootdir: /Users/camila/ai110-module1show-gameglitchinvestigator-starter
+plugins: anyio-4.13.0
+collected 6 items                                                                                                                        
+
+tests/test_game_logic.py ......                                                                                                    [100%]
+
+=========================================================== 6 passed in 0.01s ============================================================
 ```
 
 ## 🚀 Stretch Features
 
+- [x] Challenge 1: Advanced Edge-Case Testing:
+```
+========================================================== test session starts ===========================================================
+platform darwin -- Python 3.13.13, pytest-9.0.3, pluggy-1.6.0
+rootdir: /Users/camila/ai110-module1show-gameglitchinvestigator-starter
+plugins: anyio-4.13.0
+collected 16 items                                                                                                                       
+
+tests/test_edge_cases.py ................                                                                                          [100%]
+
+=========================================================== 16 passed in 0.01s ===========================================================
+```
 - [ ] [If you choose to complete Challenge 4, describe the Enhanced UI changes here — a screenshot is optional]
