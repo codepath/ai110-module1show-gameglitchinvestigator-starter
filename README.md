@@ -1,3 +1,7 @@
+#Reflection:
+
+The two bugs that I have identified to work on is the debug info that reveals the answer to the user. As well as the hint feature. By using copilot I was able to identify a leak in the file as well as create further boundries in our check guess function to give the user a more accurate hint to get closer to the answer. To address the issues I also created two test cases that test invalid guess ranges.
+
 # 🎮 Game Glitch Investigator: The Impossible Guesser
 
 ## 🚨 The Situation
