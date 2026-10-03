@@ -1,3 +1,19 @@
 streamlit>=1.21.0
 altair<5
 pytest
+
+
+## Bug Reproduction Log entry
+
+| Input | Expected Behavior | Actual Behavior | Console Output / Error |
+|---|---|---|---|
+| Secret is 65; user guesses 90 and then 100 on later submits | Once a guess is above the secret, the hint should stay “Too High” and never change the target | The secret appears to change and the game gives inconsistent hinting because the app converts the stored secret to a string on alternating attempts | The app uses `if st.session_state.attempts % 2 == 0: secret = str(st.session_state.secret)` before calling `check_guess`, so the comparison alternates between numeric and string values |
+
+### Short written explanation
+This bug is caused by the app mutating the type of the secret number between submissions. On even attempts, the secret is converted to a string; on odd attempts, it remains an integer. Since the comparison logic checks `guess > secret` and then falls back to string-based logic in the exception path, the game compares values inconsistently and can produce impossible hints like “still lower” or a false reference to a different number.
+
+### Why this qualifies as a real bug
+- It is directly present in the starter code in `app.py`
+- It is reproducible by submitting guesses across odd/even attempts
+- It violates the expected game behavior: the correct answer should stay fixed while the user guesses against it
+
