@@ -33,11 +33,11 @@ It wrote the code, ran away, and now the game is unplayable.
 
 Describe your fixed game in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Begin a new round and note the number limits and how many guesses you can make.
+2. Enter `30` as the opening guess; in this example, the game says the secret is higher.
+3. Guess `60` next, then use the lower hint to narrow down the possible answer.
+4. Watch the score respond to each attempt as you adjust your guesses.
+5. Enter the secret number to win and see the final score and round result.
 
 **Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
 
