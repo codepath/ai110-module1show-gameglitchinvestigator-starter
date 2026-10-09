@@ -1,5 +1,6 @@
 import random
 import streamlit as st
+from logic_utils import check_guess
 
 def get_range_for_difficulty(difficulty: str):
     if difficulty == "Easy":
@@ -27,24 +28,6 @@ def parse_guess(raw: str):
         return False, None, "That is not a number."
 
     return True, value, None
-
-
-def check_guess(guess, secret):
-    if guess == secret:
-        return "Win", "🎉 Correct!"
-
-    try:
-        if guess > secret:
-            return "Too High", "📈 Go HIGHER!"
-        else:
-            return "Too Low", "📉 Go LOWER!"
-    except TypeError:
-        g = str(guess)
-        if g == secret:
-            return "Win", "🎉 Correct!"
-        if g > secret:
-            return "Too High", "📈 Go HIGHER!"
-        return "Too Low", "📉 Go LOWER!"
 
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
@@ -89,11 +72,25 @@ low, high = get_range_for_difficulty(difficulty)
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
+
+def reset_game():
+    st.session_state.secret = random.randint(low, high)
+    st.session_state.attempts = 0
+    st.session_state.status = "playing"
+    st.session_state.history = []
+    st.session_state.last_hint = None
+
+
+# FIX: start a fresh game when the difficulty changes so attempts/secret match the new settings
+if st.session_state.get("difficulty") != difficulty:
+    st.session_state.difficulty = difficulty
+    reset_game()
+
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
-if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
+if "attempts" not in st.session_state: # FIX: start at 0 so no attempt is used before the first guess
+    st.session_state.attempts = 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -104,12 +101,23 @@ if "status" not in st.session_state:
 if "history" not in st.session_state:
     st.session_state.history = []
 
+if "last_hint" not in st.session_state:
+    st.session_state.last_hint = None
+
 st.subheader("Make a guess")
 
-st.info(
-    f"Guess a number between 1 and 100. "
-    f"Attempts left: {attempt_limit - st.session_state.attempts}"
-)
+# FIX: use a placeholder so the message can be refreshed after a guess is counted
+attempts_info = st.empty()
+
+
+def show_attempts_left():
+    attempts_info.info(
+        f"Guess a number between 1 and 100. "
+        f"Attempts left: {attempt_limit - st.session_state.attempts}"
+    )
+
+
+show_attempts_left()
 
 with st.expander("Developer Debug Info"):
     st.write("Secret:", st.session_state.secret)
@@ -123,6 +131,9 @@ raw_guess = st.text_input(
     key=f"guess_input_{difficulty}"
 )
 
+# FIX: reserve a spot under the input so the hint always shows in the same place
+hint_box = st.empty()
+
 col1, col2, col3 = st.columns(3)
 with col1:
     submit = st.button("Submit Guess 🚀")
@@ -131,9 +142,8 @@ with col2:
 with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
-if new_game:
-    st.session_state.attempts = 0
-    st.session_state.secret = random.randint(1, 100)
+if new_game: # FIX: reset attempts, status and history, and pick the secret from the difficulty's range
+    reset_game()
     st.success("New game started.")
     st.rerun()
 
@@ -145,25 +155,21 @@ if st.session_state.status != "playing":
     st.stop()
 
 if submit:
-    st.session_state.attempts += 1
-
     ok, guess_int, err = parse_guess(raw_guess)
 
     if not ok:
         st.session_state.history.append(raw_guess)
         st.error(err)
     else:
+        # FIX: only count valid guesses as attempts
+        st.session_state.attempts += 1
         st.session_state.history.append(guess_int)
 
-        if st.session_state.attempts % 2 == 0:
-            secret = str(st.session_state.secret)
-        else:
-            secret = st.session_state.secret
+        # FIX: always compare against the numeric secret (it used to become a string on even attempts)
+        outcome, message = check_guess(guess_int, st.session_state.secret)
 
-        outcome, message = check_guess(guess_int, secret)
-
-        if show_hint:
-            st.warning(message)
+        # FIX: remember the hint so it stays visible across reruns
+        st.session_state.last_hint = message
 
         st.session_state.score = update_score(
             current_score=st.session_state.score,
@@ -186,6 +192,11 @@ if submit:
                     f"The secret was {st.session_state.secret}. "
                     f"Score: {st.session_state.score}"
                 )
+
+    show_attempts_left()
+
+if show_hint and st.session_state.last_hint:
+    hint_box.warning(st.session_state.last_hint)
 
 st.divider()
 st.caption("Built by an AI that claims this code is production-ready.")

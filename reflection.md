@@ -5,18 +5,20 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 ## 1. What was broken when you started?
 
 - What did the game look like the first time you ran it?
+  The UI was basic. There was a prompt to enter in a number that also said there was 7 attempts left even though the list on the left said there were 8 attempts
 - List at least two concrete bugs you noticed at the start  
   (for example: "the hints were backwards").
-
+   The hints were backward
+   Wrong amount of attempts left displayed
 **Bug Reproduction Log**
 
 Document at least 3 bugs you found. Add rows as needed.
 
-| Input | Expected Behavior | Actual Behavior | Console Output / Error |
-|-------|-------------------|-----------------|------------------------|
-| | | | |
-| | | | |
-| | | | |
+| Input     | Expected Behavior | Actual Behavior | Console Output / Error |
+|-----------|-------------------|-----------------|------------------------|
+|Guess of 60| Too High hint     | Too low hint    |None
+|Guess of 90| Too High hint     | Too low hint    |None
+|Guess of 10| Too Low hint      | Too high hint   |None
 
 ---
 
